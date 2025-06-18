@@ -13,10 +13,6 @@ export const Student = sequelize.define('students_tb', {
             key: 'userID'
         }
     },
-    studentName: {
-        type: DataTypes.STRING(50),
-        allowNull: false,
-    },
     courseID: {
         type: DataTypes.STRING(30),
         references: {
