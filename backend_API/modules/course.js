@@ -7,7 +7,7 @@ export const Course = sequelize.define('course_tb', {
         primaryKey: true,
     },
     courseName: {
-        type: DataTypes.STRING(50),
+        type: DataTypes.STRING(100),
         allowNull: false,
     },
     departmentID: {

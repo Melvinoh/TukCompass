@@ -9,7 +9,7 @@ export const Department = sequelize.define('department_tb', {
         primaryKey: true,
     },
     departmentName: {
-        type: DataTypes.STRING(50),
+        type: DataTypes.STRING(100),
         allowNull: false,
     },
     schoolID: {

@@ -9,8 +9,8 @@ export const School = sequelize.define( 'school_tb' , {
         primaryKey: true,
     },
     schoolName: {
-        type: DataTypes.STRING(30),
-        allowNull: false,
+        type: DataTypes.STRING(100),
+        allowNull: false
     },
     facultyID: {
         type: DataTypes.STRING(30),
