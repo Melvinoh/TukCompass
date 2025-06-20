@@ -1,13 +1,14 @@
 import express  from "express";
 import "./modules/Relationship.js"
 
-import registrationRoutes from "./Routers/registrationRoutes.js"
+import registrationRoutes from "./Routers/registrationRoutes.js";
 import classRoutes from "./Routers/classRoutes.js";
 import courseRoutes from "./Routers/courseRoutes.js";
 import schoolRoutes from "./Routers/schoolRoutes.js";
 import facultyRoutes from "./Routers/facultyRoutes.js";
 import departmentRoutes from "./Routers/departmentRoutes.js";
-import adminRoutes from "./Routers/adminRoutes.js"
+import adminRoutes from "./Routers/adminRoutes.js";
+import curriculumRoutes from "./Routers/curriculumRoutes.js";
 
 
 
@@ -21,6 +22,8 @@ app.use("/api/school", schoolRoutes);
 app.use("/api/faculty", facultyRoutes);
 app.use("/api/department", departmentRoutes);
 app.use("/api/admin",adminRoutes);
+app.use("/api/admin",curriculumRoutes);
+
 
 app.listen(3000, () => {
     console.log('Server running on port 3000');

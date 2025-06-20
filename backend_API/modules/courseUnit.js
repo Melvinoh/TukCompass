@@ -5,7 +5,7 @@ import { Unit } from "./units.js";
 
 export const CourseUnit = sequelize.define("course_unit_tb", {
   courseUnitID: {
-    type: DataTypes.STRING(30),
+    type: DataTypes.STRING(70),
     primaryKey: true,
     allowNull: false,
     defaultValue: DataTypes.UUIDV4
@@ -24,4 +24,12 @@ export const CourseUnit = sequelize.define("course_unit_tb", {
       key: "unitID",
     },
   },
+  year:{
+    type: DataTypes.INTEGER(5),
+    allowNull: false,
+  },
+  sem:{
+    type: DataTypes.INTEGER(5),
+    allowNull: false,
+  }
 });

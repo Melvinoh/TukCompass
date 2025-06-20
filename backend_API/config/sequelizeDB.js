@@ -12,6 +12,7 @@ export const sequelize = new Sequelize(
     dialect: "mysql",
     define:{
       freezeTableName : true,
+      timestamps: false
     }
   }
 );

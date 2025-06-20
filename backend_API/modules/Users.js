@@ -29,4 +29,7 @@ import {sequelize} from '../config/sequelizeDB.js';
     mobile:{
         type: DataTypes.STRING(15),
     },
+    profileUrl:{
+        type: DataTypes.STRING(100),
+    },
 })
