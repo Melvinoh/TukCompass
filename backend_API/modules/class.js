@@ -8,10 +8,6 @@ export const Class = sequelize.define('class_tb', {
         type: DataTypes.STRING(30),
         primaryKey: true,
     },
-    className: {
-        type: DataTypes.STRING(50),
-        allowNull: false,
-    },
     courseID: {
         type: DataTypes.STRING(30),
         references: {
@@ -25,6 +21,21 @@ export const Class = sequelize.define('class_tb', {
             model: User,
             key: 'userID'
         }
+    },
+    enrolmentYear:{
+        type: DataTypes.INTEGER(6)
+    },
+    completionYear:{
+        type: DataTypes.INTEGER(6)
+    },
+    currentYear:{
+        type: DataTypes.INTEGER(4),
+    },
+    currentSem:{
+        type: DataTypes.INTEGER(4),
+    },
+    academicYear:{
+        type: DataTypes.STRING(10)
     }
 });
 

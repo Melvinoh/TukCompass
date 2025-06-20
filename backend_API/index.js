@@ -7,6 +7,7 @@ import courseRoutes from "./Routers/courseRoutes.js";
 import schoolRoutes from "./Routers/schoolRoutes.js";
 import facultyRoutes from "./Routers/facultyRoutes.js";
 import departmentRoutes from "./Routers/departmentRoutes.js";
+import adminRoutes from "./Routers/adminRoutes.js"
 
 
 
@@ -19,6 +20,7 @@ app.use("/api/course", courseRoutes);
 app.use("/api/school", schoolRoutes);
 app.use("/api/faculty", facultyRoutes);
 app.use("/api/department", departmentRoutes);
+app.use("/api/admin",adminRoutes);
 
 app.listen(3000, () => {
     console.log('Server running on port 3000');

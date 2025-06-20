@@ -13,16 +13,16 @@ import { LecturerUnits } from "./lecturerUnits.js"
 
 // Define relationships between models
 
-Faculty.hasMany(School, {foreignKey :' facultyID'})
+Faculty.hasMany(School, {foreignKey :' facultyID', onDelete:"CASCADE", hooks:true})
 School.belongsTo(Faculty, { foreignKey: 'facultyID' })
 
-School.hasMany(Department, { foreignKey: 'schoolID' })
+School.hasMany(Department, { foreignKey: 'schoolID', onDelete:"CASCADE", hooks:true })
 Department.belongsTo(School, { foreignKey: 'schoolID' })
 
-Department.hasMany(Course, { foreignKey: 'departmentID' })
+Department.hasMany(Course, { foreignKey: 'departmentID', onDelete:"CASCADE", hooks:true })
 Course.belongsTo(Department, { foreignKey: 'departmentID' })
 
-Course.hasMany(Class, { foreignKey: 'courseID' })
+Course.hasMany(Class, { foreignKey: 'courseID', onDelete:"CASCADE", hooks:true })
 Class.belongsTo(Course, { foreignKey: 'courseID' })
 
 Student.belongsTo(Class, { foreignKey: 'classID' })
