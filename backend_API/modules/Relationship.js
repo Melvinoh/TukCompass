@@ -45,16 +45,13 @@ Faculty.belongsTo(User, { foreignKey: 'deanID'})
 Lecturer.belongsTo(User, { foreignKey: 'lecturerID' })
 User.hasMany(Lecturer, { foreignKey: 'lecturerID' })
 
-Student.belongsTo(User, { foreignKey: 'userID' })
+Student.belongsTo(User, { foreignKey: 'studentID' })
 User.hasMany(Student, { foreignKey: 'studentID' })
 
 Unit.belongsToMany(Course,{ through : CourseUnit, foreignKey: 'unitID'})
 Course.belongsToMany(Unit, { through: CourseUnit, foreignKey: 'courseID' })
 
 //many to many relationships
-
-Unit.belongsToMany(Lecturer, { through: LecturerUnits, foreignKey: 'unitID' })
-Lecturer.belongsToMany(Unit, { through: LecturerUnits, foreignKey: 'lecturerID' })
 
 Schedule.belongsToMany(Course, { through: ScheduleCourse, foreignKey: 'scheduleID' })
 Course.belongsToMany(Schedule, { through: ScheduleCourse, foreignKey: 'courseID' })

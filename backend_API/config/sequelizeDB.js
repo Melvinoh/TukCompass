@@ -26,7 +26,7 @@ try {
     console.error("❌ Unable to connect to the database:", error);
   });
 
-  sequelize.sync().then(() => {
+  sequelize.sync({alter: true}).then(() => {
     console.log("✅ DB synced");
   });
 

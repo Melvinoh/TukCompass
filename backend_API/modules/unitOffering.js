@@ -27,7 +27,7 @@ import {Unit} from "./units.js"
         }
     },
     academicYear:{
-        type: DataTypes.INTEGER(10),
+        type: DataTypes.STRING(10),
         allowNull: false
     },
     year:{
@@ -39,4 +39,11 @@ import {Unit} from "./units.js"
         allowNull: false
     }
 
+},{
+  indexes: [
+    {
+      unique: true,
+      fields: ['lecturerID', 'unitID', 'academicYear','year','sem']
+    }
+  ],
 })

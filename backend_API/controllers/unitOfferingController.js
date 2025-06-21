@@ -1,51 +1,88 @@
-import {UnitOffering} from "../modules/unitOffering.js"
-import {UnitEnrollment} from "../modules/unitEnrollment.js"
-import {Schedule} from "../modules/schedule.js"
-import {ScheduleCourse} from "../modules/scheduleCourse.js"
-import {sequelize} from "../config/sequelizeDB.js"
+import { UnitOffering } from "../modules/unitOffering.js";
+import { Schedule } from "../modules/schedule.js";
+import { ScheduleCourse } from "../modules/scheduleCourse.js";
+import { Course } from "../modules/course.js";
+import { Unit } from "../modules/units.js";
+import { sequelize } from "../config/sequelizeDB.js";
 
-export const unitOfferingReg = async (req,res) => {
+export const unitOfferingReg = async (req, res) => {
+  const { unitName, lecturerID, academicYear, sem, year, schedules } = req.body;
+  const t = await sequelize.transaction();
 
-    const{lecturerID, unitID, academicYear, year, sem, schedules}= req.body
+  const unit = await Unit.findOne({where:{unitName},transaction: t})
 
-    const t = await sequelize.transaction()
-    try {
-        
-        const[newOffering] = await UnitOffering.findOrCreate({
-            where:{unitID,academicYear,sem},
-            defaults:{lecturerID,year},
+  if(!unit){
+       await t.rollback();
+       return res.status(404).json({message:"unit not found"})
+  }
+
+  try {
+    const [newOffering] = await UnitOffering.findOrCreate({
+        where: {
+            lecturerID,
+            unitID: unit.unitID, 
+            academicYear,
+            year,
+            sem,
+        },
+        transaction: t
+    });
+
+    for (const sched of schedules) {
+      const courseNames = sched.courseNames;
+
+      // Get courseIDs from names
+      const courseRecords = await Course.findAll({
+        where: { courseName: courseNames },
+        transaction: t
+      });
+
+      if (!courseRecords.length) {
+        throw new Error("No matching course(s) found");
+      }
+
+      const courseIDs = courseRecords.map(course => course.courseID);
+
+      // Loop through time slots
+      for (const slot of sched.timeSlots) {
+        const [newSchedule] = await Schedule.findOrCreate({
+            where: {
+                unitOfferingID: newOffering.unitOfferingID,
+                day: slot.day,
+                startTime: slot.startTime,
+                endTime: slot.endTime,
+                mode: slot.room
+            },
             transaction: t
-        })
-        for (const sched of schedules) {
-            const newShedule = await Schedule.create({
-                unitOfferingID: sched.unitOfferingID,
-                day: sched.day,
-                startTime: sched.startTime,
-                endTime: sched.endTime,
-                mode: sched.mode
-            },{transaction: t})
+        });
 
-            for (const courseID of sched.courseIDs) {
-                const newSCheduleCourse = await ScheduleCourse.create({
-                    courseID: courseID,
-                    scheduleID: newShedule.scheduleID
-                },{transaction: t})
-            }
+        // Link each course to this schedule
+        for (const courseID of courseIDs) {
+            await ScheduleCourse.findOrCreate({
+                where: {
+                    scheduleID: newSchedule.scheduleID,
+                    courseID 
+                },
+                transaction: t
+            });
+
         }
-        res.status(201).json({
-            message:"unit offering added succefully",
-            unitAdded:newOffering
-        })
-
-    } catch (error) {
-
-        await t.rollback()
-        console.error(error)
-        res.status(500).json({
-            message: "failed to add  offering ",
-            error: error.message
-        })
-        
+      }
     }
-    
-}
+
+    await t.commit();
+
+    res.status(201).json({
+      message: "Unit offering added successfully",
+      unitAdded: newOffering
+    });
+
+  } catch (error) {
+    await t.rollback();
+    console.error(error);
+    res.status(500).json({
+      message: "Failed to add unit offering",
+      error: error.message
+    });
+  }
+};

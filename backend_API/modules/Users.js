@@ -20,7 +20,8 @@ import {sequelize} from '../config/sequelizeDB.js';
         unique: true
     },
     password:{
-        type: DataTypes.STRING(40)
+        type: DataTypes.STRING(100),
+        allowNull: false
     },
     role:{
         type: DataTypes.ENUM('student','lecturer','admin'),
