@@ -9,6 +9,10 @@ import { Lecturer } from "./lecturers.js"
 import { Unit } from "./units.js"
 import { CourseUnit } from "./courseUnit.js";
 import { LecturerUnits } from "./lecturerUnits.js"
+import {UnitOffering} from "./unitOffering.js"
+import {UnitEnrollment} from "./unitEnrollment.js"
+import {Schedule} from "./schedule.js"
+import {ScheduleCourse} from "./scheduleCourse.js"
 
 
 // Define relationships between models
@@ -47,8 +51,19 @@ User.hasMany(Student, { foreignKey: 'studentID' })
 Unit.belongsToMany(Course,{ through : CourseUnit, foreignKey: 'unitID'})
 Course.belongsToMany(Unit, { through: CourseUnit, foreignKey: 'courseID' })
 
+//many to many relationships
+
 Unit.belongsToMany(Lecturer, { through: LecturerUnits, foreignKey: 'unitID' })
 Lecturer.belongsToMany(Unit, { through: LecturerUnits, foreignKey: 'lecturerID' })
+
+Schedule.belongsToMany(Course, { through: ScheduleCourse, foreignKey: 'scheduleID' })
+Course.belongsToMany(Schedule, { through: ScheduleCourse, foreignKey: 'courseID' })
+
+Unit.belongsToMany(Lecturer, { through: UnitOffering, foreignKey: 'unitID' })
+Lecturer.belongsToMany(Unit, { through: UnitOffering, foreignKey: 'lecturerID' })
+
+UnitOffering.belongsToMany(Student, { through: UnitEnrollment, foreignKey: 'unitOfferingID' })
+Student.belongsToMany(UnitOffering, { through: UnitEnrollment, foreignKey: 'studentID' })
 
 
 

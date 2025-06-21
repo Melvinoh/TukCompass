@@ -8,6 +8,8 @@ import schoolRoutes from "./Routers/schoolRoutes.js";
 import facultyRoutes from "./Routers/facultyRoutes.js";
 import departmentRoutes from "./Routers/departmentRoutes.js";
 import adminRoutes from "./Routers/adminRoutes.js";
+import unitEnrollmentRoutes from "./Routers/unitEnrollmentRoutes.js";
+import unitOfferingRoutes from "./Routers/unitOfferingRoutes.js";
 import curriculumRoutes from "./Routers/curriculumRoutes.js";
 
 
@@ -21,8 +23,8 @@ app.use("/api/course", courseRoutes);
 app.use("/api/school", schoolRoutes);
 app.use("/api/faculty", facultyRoutes);
 app.use("/api/department", departmentRoutes);
-app.use("/api/admin",adminRoutes);
-app.use("/api/admin",curriculumRoutes);
+app.use("/api/student",unitEnrollmentRoutes);
+app.use("/api/lecturer",unitOfferingRoutes);
 
 
 app.listen(3000, () => {
