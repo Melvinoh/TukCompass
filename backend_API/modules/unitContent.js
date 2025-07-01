@@ -16,13 +16,16 @@ export const UnitContent = sequelize.define("unitContent_tb", {
         }
     },
     pdfURL: {
-        DataTypes.STRING(100)
+        type: DataTypes.STRING
     },
     fileName: {
-        DataTypes.STRING(100)
+        type: DataTypes.STRING(100)
+    },
+    type: {
+        type: DataTypes.ENUM( 'assignment','unit_Outline','unnit_PDF')
     },
     uploadedBy: {
-        DataTypes.STRING(40)
+        type: DataTypes.STRING(40)
     },
     uploadDate: {
         type: DataTypes.DATE,
