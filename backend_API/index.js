@@ -1,5 +1,6 @@
 import express  from "express";
 import "./modules/Relationship.js"
+import "./modules/club&sport/relationships.js"
 
 import registrationRoutes from "./Routers/registrationRoutes.js";
 import classRoutes from "./Routers/classRoutes.js";
@@ -11,6 +12,9 @@ import adminRoutes from "./Routers/adminRoutes.js";
 import unitEnrollmentRoutes from "./Routers/unitEnrollmentRoutes.js";
 import unitOfferingRoutes from "./Routers/unitOfferingRoutes.js";
 import curriculumRoutes from "./Routers/curriculumRoutes.js";
+import unitContentRoutes from "./Routers/unitContentRoutes.js";
+
+import csRoutes from "./Routers/c&s/c&sRoutes.js";
 
 
 
@@ -27,6 +31,8 @@ app.use("/api/admin",curriculumRoutes)
 app.use("/api/admin",adminRoutes)
 app.use("/api/student",unitEnrollmentRoutes);
 app.use("/api/lecturer",unitOfferingRoutes);
+app.use("/api/unitContent",unitContentRoutes);
+app.use("/api/clubSports",csRoutes);
 
 
 app.listen(3000, () => {

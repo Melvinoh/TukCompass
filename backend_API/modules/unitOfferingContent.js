@@ -16,13 +16,16 @@ export const UnitOfferingContent = sequelize.define("unitOfferingContent_tb", {
         }
     },
     videoURL:{
-        DataTypes.STRING(100)
+        type: DataTypes.STRING
     },
     link: {
-        DataTypes.STRING(100)
+        type: DataTypes.STRING
+    },
+    type:{
+        type: DataTypes.ENUM('recording', 'link')
     },
     description: {
-        DataTypes.TEXT
+        type: DataTypes.TEXT
     },
     uploadedAt: {
         type: DataTypes.DATE,

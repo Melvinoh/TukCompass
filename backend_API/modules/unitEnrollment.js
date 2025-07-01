@@ -28,7 +28,6 @@ import {UnitOffering} from "./unitOffering.js"
     },
     enrollmentDate:{
         type: DataTypes.INTEGER(10),
-        allowNull: false
     },
     status:{
         type: DataTypes.ENUM("active", "complited"),
