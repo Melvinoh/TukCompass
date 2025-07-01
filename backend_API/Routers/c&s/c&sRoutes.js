@@ -1,6 +1,7 @@
 import express from "express"
-import {creatClubSport} from "../../controllers/club&Sports/c&sController.js"
+import {creatClubSport,getClubSport,getClubSportID} from "../../controllers/club&Sports/c&sController.js"
 import { upload } from "../../middlewares/upload.js";
+import { get } from "http";
 
 
 const router = express.Router()
@@ -13,6 +14,7 @@ router.post(
     ]),
     creatClubSport
 );
-
+router.get('/getClubSport',getClubSport);
+router.get('/getClubSport/:id',getClubSportID);
 
 export default router;

@@ -15,6 +15,10 @@ import curriculumRoutes from "./Routers/academics/curriculumRoutes.js";
 import unitContentRoutes from "./Routers/academics/unitContentRoutes.js";
 
 import csRoutes from "./Routers/c&s/c&sRoutes.js";
+import commentRoutes from "./Routers/c&s/commentRoutes.js";
+import connectRoutes from "./Routers/c&s/connectRoutes.js";
+import likeRoutes from "./Routers/c&s/likeRoutes.js";
+import postRoutes from "./Routers/c&s/postRoutes.js";
 
 
 
@@ -32,8 +36,12 @@ app.use("/api/admin",adminRoutes)
 app.use("/api/student",unitEnrollmentRoutes);
 app.use("/api/lecturer",unitOfferingRoutes);
 app.use("/api/unitContent",unitContentRoutes);
-app.use("/api/clubSports",csRoutes);
 
+app.use("/api/clubSports",csRoutes);
+app.use("/api/comments",commentRoutes);
+app.use("/api/connects",connectRoutes);
+app.use("/api/likes",likeRoutes);
+app.use("/api/posts",postRoutes);
 
 app.listen(3000, () => {
     console.log('Server running on port 3000');

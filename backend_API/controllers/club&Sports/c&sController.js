@@ -1,5 +1,9 @@
 import { ClubSports } from "../../modules/club&sport/c&s.js";
 import { cloudinary } from "../../config/cloudinary.js";
+import { CS_Members } from "../../modules/club&sport/c&sMembers.js";
+import { User } from "../../modules/Users.js";
+import { CS_Posts } from "../../modules/club&sport/c&sPosts.js";
+import { Posts } from "../../modules/club&sport/post.js";
 
 export const creatClubSport = async (req, res) => {
   try {
@@ -88,9 +92,7 @@ export const getClubSport = async (req,res) => {
   }
 }
 export const getClubSportID = async (req,res) => {
-
   const {clubSportsID} = req.params;
-
   try {
     const response = await ClubSports.findOne({
       where: {
@@ -185,4 +187,70 @@ export const updateClubSport = async (req, res) => {
       });
       
     }
+}
+
+export const enrollClubSport = async (req, res) => {
+  const { clubSportsID } = req.params;
+  const userID = req.user.userID;
+
+  try {
+    const existingEnrollment = await CS_Members.findOne({ where: { userID, clubSportsID } });
+    if (existingEnrollment) {
+      return res.status(400).json({ message:"member"});
+    }
+// Enroll the user
+    await CS_Members.create({ userID, clubSportsID });
+    return res.status(200).json({ message: "Enrolled successfully" });
+
+  } catch (error) {
+    console.error("Error enrolling in club/sport:", error);
+    return res.status(500).json({ message: "Internal server error" });
+  }
+}
+export const getMembers = async (req, res) => {
+  const { clubSportsID } = req.params;
+  try {
+    const members = await CS_Members.findAll({
+      where: { clubSportsID },
+      include: [{
+        model: User,
+        as: 'user'
+      }]
+    });
+
+    if (members.length === 0) {
+      return res.status(404).json({ message: "No members found for this club/sport" });
+    }
+    return res.status(200).json(members);
+
+  } catch (error) {
+    console.error("Error fetching members:", error);
+    return res.status(500).json({
+      message: "Internal server error",
+      error: error.message
+    });
+  }
+}
+
+export const getGallery = async (req, res) => {
+  const { clubSportsID } = req.params;
+  try {
+    const gallery = await CS_Posts.findAll({
+      where: {
+         clubSportsID
+      },
+      include: [{
+        model: Posts,
+        attributes: ['imageURL'],
+        as: 'post'
+      }]
+    });
+    res.status(200).json(gallery.map(item => item.post.imageURL));
+  } catch (error) {
+    console.error("Error fetching gallery:", error);
+    return res.status(500).json({
+      message: "Internal server error",
+      error: error.message
+    });
+  }
 }

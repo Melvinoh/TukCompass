@@ -4,7 +4,7 @@ import {Posts} from "./post.js"
 import {ClubSports} from "./c&s.js"
 
 export const CS_Posts = sequelize.define('c&sPosts_tb', {
-    csMemberID:{
+    csPostID:{
         type: DataTypes.STRING(40),
         primaryKey: true,
         defaultValue: DataTypes.UUIDV4(30)

@@ -8,7 +8,6 @@ export const uploadUnitPDF = async (req,res)=>{
     const {unitID, fileName, uploadedBy,} =  req.body
 
     try {
-
         console.log(req.file);
 
         if(!req.file){
