@@ -1,18 +1,18 @@
 import express  from "express";
-import "./modules/Relationship.js"
+import "./modules/Acdemics/Relationship.js";
 import "./modules/club&sport/relationships.js"
 
-import registrationRoutes from "./Routers/registrationRoutes.js";
-import classRoutes from "./Routers/classRoutes.js";
-import courseRoutes from "./Routers/courseRoutes.js";
-import schoolRoutes from "./Routers/schoolRoutes.js";
-import facultyRoutes from "./Routers/facultyRoutes.js";
-import departmentRoutes from "./Routers/departmentRoutes.js";
-import adminRoutes from "./Routers/adminRoutes.js";
-import unitEnrollmentRoutes from "./Routers/unitEnrollmentRoutes.js";
-import unitOfferingRoutes from "./Routers/unitOfferingRoutes.js";
-import curriculumRoutes from "./Routers/curriculumRoutes.js";
-import unitContentRoutes from "./Routers/unitContentRoutes.js";
+import registrationRoutes from "./Routers/academics/registrationRoutes.js";
+import classRoutes from "./Routers/academics/classRoutes.js";
+import courseRoutes from "./Routers/academics/courseRoutes.js";
+import schoolRoutes from "./Routers/academics/schoolRoutes.js";
+import facultyRoutes from "./Routers/academics/facultyRoutes.js";
+import departmentRoutes from "./Routers/academics/departmentRoutes.js";
+import adminRoutes from "./Routers/academics/adminRoutes.js";
+import unitEnrollmentRoutes from "./Routers/academics/unitEnrollmentRoutes.js";
+import unitOfferingRoutes from "./Routers/academics/unitOfferingRoutes.js";
+import curriculumRoutes from "./Routers/academics/curriculumRoutes.js";
+import unitContentRoutes from "./Routers/academics/unitContentRoutes.js";
 
 import csRoutes from "./Routers/c&s/c&sRoutes.js";
 
