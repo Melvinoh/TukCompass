@@ -1,8 +1,6 @@
 import { ClubSports } from "../../modules/club&sport/c&s.js";
-import { sequelize } from "../../config/sequelizeDB.js";
 import { cloudinary } from "../../config/cloudinary.js";
 
-// Assumes you're using upload.fields([{name: 'profile'}, {name: 'cover'}])
 export const creatClubSport = async (req, res) => {
   try {
     const { clubSportsID, name, type, description, patron } = req.body;
@@ -56,3 +54,35 @@ export const creatClubSport = async (req, res) => {
     });
   }
 };
+
+export const getClubSport = async (req,res) => {
+  
+  const {type} = req.body
+
+  try {
+    
+    const response = await ClubSports.findAll({
+      where:{
+        type: 'clubs'
+      }
+    })
+    res.status(200).json({
+      message:'fetch succefull',
+      clubSport: response
+    });
+
+  } catch (error) {
+
+    console.error(error)
+    res.status(500).json({
+      message: "could not fetch data an error occured",
+      err: error.message
+    })
+  
+  }
+}
+export const getClubSportID = async (req,res) => {
+  
+  const {} = req.param
+  
+}
