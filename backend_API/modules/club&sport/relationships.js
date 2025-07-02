@@ -8,20 +8,22 @@ import {CS_Posts} from "./c&sPosts.js"
 import {Posts} from "./post.js"
 
 
-
 ClubSports.belongsToMany(User, { through: CS_Members, foreignKey: 'clubSportID', otherKey: 'userID' })
 User.belongsToMany(ClubSports, { through: CS_Members, foreignKey: 'userID', otherKey: 'clubSportID' })
 
+Posts.belongsToMany(ClubSports, { through: CS_Posts, foreignKey: 'postID', otherKey: 'clubSportID' })
+ClubSports.belongsToMany(Posts, { through: CS_Posts, foreignKey: 'clubSportID', otherKey: 'postID' })
+
 CS_Members.belongsTo(User, { foreignKey: 'userID', as: 'user' });
-User.hasMany(CS_Members, { foreignKey: 'userID' }); 
+User.hasMany(CS_Members, { foreignKey: 'userID', onDelete: "CASCADE", hooks: true }); 
 
 CS_Posts.belongsTo(ClubSports, { foreignKey: 'clubSportID'})
-ClubSports.hasMany(CS_Posts, { foreignKey: 'clubSportID'})
+ClubSports.hasMany(CS_Posts, { foreignKey: 'clubSportID', onDelete: "CASCADE", hooks: true });
 
-Connects.belongsTo(User, { foreignKey: 'userID', as: 'user' });
-User.hasMany(Connects, { foreignKey: 'userID' });
+Posts.hasMany(CS_Posts, { foreignKey: 'postID', onDelete: "CASCADE", hooks: true });
+CS_Posts.belongsTo(Posts, { foreignKey: 'postID' });
 
-User.hasMany(Posts, { foreignKey: 'userID' });
+User.hasMany(Posts, { foreignKey: 'userID', onDelete: "CASCADE", hooks: true });
 Posts.belongsTo(User, { foreignKey: 'userID' });
 
 Posts.hasMany(Likes, {foreignKey :'postID', onDelete:"CASCADE", hooks:true})
@@ -35,3 +37,9 @@ Likes.belongsTo(User, { foreignKey: 'userID' })
 
 User.hasMany(Comments, {foreignKey :'userID', onDelete:"CASCADE", hooks:true})
 Comments.belongsTo(User, { foreignKey: 'userID' })
+
+Connects.belongsTo(User, { foreignKey: 'followingID', as: 'followingUser' });
+User.hasMany(Connects, { foreignKey: 'followingID', as: 'followers' });
+
+Connects.belongsTo(User, { foreignKey: 'followerID', as: 'followerUser' });
+User.hasMany(Connects, { foreignKey: 'followerID', as: 'followerUsers' });

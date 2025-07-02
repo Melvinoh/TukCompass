@@ -7,7 +7,7 @@ import { Posts } from "../../modules/club&sport/post.js";
 
 export const creatClubSport = async (req, res) => {
   try {
-    const { clubSportID, name, type, description, patron } = req.body;
+    const { clubSportsID, name, type, description, patron } = req.body;
 
     let profileUrl = null;
     let coverUrl = null;
@@ -37,7 +37,7 @@ export const creatClubSport = async (req, res) => {
     }
 
     const newClubSport = await ClubSports.create({
-      clubSportID,
+      clubSportsID,
       name,
       type,
       profileURL: profileUrl,

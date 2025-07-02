@@ -14,7 +14,8 @@ export const CS_Posts = sequelize.define('csPosts_tb', {
         references:{
             model: ClubSports,
             key:"clubSportsID"
-        }
+        },
+        defaultValue: "Connects"
     },
     postID: {
         type: DataTypes.STRING(40),

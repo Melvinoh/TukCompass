@@ -1,11 +1,10 @@
 import { authenticate } from "../../middlewares/Authenticate.js";
 import express from "express";
-import { likePost, getLikes, unlikePost } from "../../controllers/club&Sports/likesController.js";
+import { likePost, getLikes} from "../../controllers/club&Sports/likesController.js";
 
 const router = express.Router();
 
-router.post("/:postID/likePost", authenticate, likePost);
-router.delete("/:postID/unlikePost", authenticate, unlikePost);
-router.get("/getLikes", authenticate, getLikes);
+router.post("/likePost/:id", authenticate, likePost);
+router.get("/getLikes/:id", authenticate, getLikes);
 
 export default router;

@@ -3,21 +3,22 @@ import { Posts } from "../../modules/club&sport/post.js";
 
 
 export const likePost = async (req, res) => {
-  const postID = req.params.postID;
-  const userID = req.user.userID;
-
+  const {id} = req.params;
+  const {userID} = req.user;
   try {
  
-    const post = await Posts.findByPk(postID);
+    const post = await Posts.findByPk(id);
     if (!post) {
       return res.status(404).json({ message: "Post not found" });
     }
+    const existingLike = await Likes.findOne({ where: { postID: id, userID } });
 
-    const existingLike = await Likes.findOne({ where: { postID, userID } });
     if (existingLike) {
-      return res.status(400).json({ message: "You have already liked this post" });
+      await existingLike.destroy();
+      return res.status(200).json({ message: "Post unliked successfully" });
     }
-    const newLike = await Likes.create({ postID, userID });
+
+    const newLike = await Likes.create({ postID: id, userID });
 
     return res.status(201).json({
       message: "Post liked successfully",
@@ -30,34 +31,11 @@ export const likePost = async (req, res) => {
   }
 }
 
-
-export const unlikePost = async (req, res) => {
-  const postID = req.params.postID;
-  const userID = req.user.userID;
-
-  try {
-    // Check if the like exists
-    const like = await Likes.findOne({ where: { postID, userID } });
-    if (!like) {
-      return res.status(404).json({ message: "Like not found" });
-    }
-
-    // Delete the like
-    await like.destroy();
-
-    return res.status(200).json({ message: "Post unliked successfully" });
-
-  } catch (error) {
-    console.error("Error unliking post:", error);
-    return res.status(500).json({ message: "Internal server error" });
-  }
-}
-
 export const getLikes = async (req, res) => {
-  const postID = req.params.postID;
+  const { id } = req.params;
   try {
     const likes = await Likes.findAll({
-      where: { postID },
+      where: { postID: id },
     });
 
     if (likes.length === 0) {

@@ -6,7 +6,6 @@ import { sequelize } from "../../config/sequelizeDB.js"
 export const addComment = async (req, res) => {
   const { description, postID } = req.body;
   const userID = req.user.userID;
-
   const t = await sequelize.transaction();
   try {
     const newComment = await Comments.create({
@@ -30,13 +29,14 @@ export const addComment = async (req, res) => {
 }
 
 export const getComments = async (req, res) => {
-  const postID = req.params.postID;
+  const {postID} = req.body;
   try {
     const comments = await Comments.findAll({
       where: { postID },
+      attributes: ['commentID', 'description'],
       include: [{
         model: User,
-        as: 'user'
+        attributes: ['fname', 'sname', 'profileUrl', 'userID']
       }]
     });
 
@@ -54,11 +54,11 @@ export const getComments = async (req, res) => {
   }
 }
 export const deleteComment = async (req, res) => {
-  const commentID = req.params.commentID;
+  const {id}= req.params;
   const userID = req.user.userID;
 
   try {
-    const comment = await Comments.findOne({ where: { commentID, userID } });
+    const comment = await Comments.findOne({ where: { commentID: id, userID } });
 
     if (!comment) {
       return res.status(404).json({ message: "Comment not found or you do not have permission to delete it" });

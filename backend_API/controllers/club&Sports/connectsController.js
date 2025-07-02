@@ -4,26 +4,35 @@ import { User } from "../../modules/Users.js"
 
 export const followUser = async (req, res) => {
   try {
-    const followerID = req.user.userID     
-    const { followingID } = req.body       
+    const { userID } = req.user
+    const { followingID } = req.body
 
-    if (followerID === followingID) {
-      return res.status(400).json({ message: "You cannot follow yourself." })
+    if (userID === followingID) {
+      return res.status(400).json({ 
+        message: "You cannot follow yourself.",
+       })
     }
     const existing = await Connects.findOne({
-      where: { followerID, followingID }
+      where: { followingID, followerID: userID },
+      attributes: ['connectID']
     })
-
     if (existing) {
-      return res.status(409).json({ message: "Already following this user." })
+      await existing.destroy()
+      return res.status(200).json({ 
+        message: "Unfollowed successfully",
+        connection: existing
+       })
     }
 
-    const connection = await Connects.create({ followerID, followingID })
+    const connection = await Connects.create({ followingID, followerID: userID })
 
     res.status(201).json({ message: "Followed successfully", connection })
   } catch (err) {
     console.error("Follow error:", err)
-    res.status(500).json({ message: "Internal server error" })
+    res.status(500).json({ 
+      message: "Internal server error",
+      error: err.message
+     })
   }
 }
 
@@ -49,18 +58,22 @@ export const unfollowUser = async (req, res) => {
 
 export const getFollowing = async (req, res) => {
   try {
-    const followerID = req.user.userID
+    const { userID } = req.user
 
     const following = await Connects.findAll({
-      where: { followerID },
+      where: { followerID: userID },
+      attributes: ['connectID', 'followerID'],
       include: [{
         model: User,
-        as: 'followingUser', 
-        attributes: ['userID', 'name', 'email']
+        as: 'followingUser',
+        attributes: ['userID', 'fname', 'sname', 'profileUrl']
       }]
+    });
+    res.status(200).json({
+      following: following,
+      count: following.length   
     })
 
-    res.status(200).json(following)
   } catch (err) {
     res.status(500).json({ message: "Failed to fetch following list", error: err.message })
   }
@@ -69,18 +82,21 @@ export const getFollowing = async (req, res) => {
 
 export const getFollowers = async (req, res) => {
   try {
-    const followingID = req.user.userID
+    const { userID } = req.user
 
     const followers = await Connects.findAll({
-      where: { followingID },
+      where: { followingID: userID },
       include: [{
         model: User,
         as: 'followerUser', 
-        attributes: ['userID', 'name', 'email']
+        attributes: ['userID', 'fname', 'sname', 'profileUrl']
       }]
-    })
+    });
 
-    res.status(200).json(followers)
+    res.status(200).json({
+      followers: followers,
+      count: followers.length
+    })
   } catch (err) {
     res.status(500).json({ message: "Failed to fetch followers", error: err.message })
   }

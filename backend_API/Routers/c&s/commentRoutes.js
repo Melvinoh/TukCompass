@@ -4,8 +4,9 @@ import { addComment, deleteComment, getComments } from '../../controllers/club&S
 
 const router = express.Router();
 
-router.post("/:postID/addComments", authenticate, addComment);
-router.delete("/:postID/comments/:commentID", authenticate, deleteComment);
-router.get("/:postID/comments", authenticate, getComments);
+router.post("/addComments", authenticate, addComment);
+router.delete("/deleteComment/:id", authenticate, deleteComment);
+router.get("/getComments", authenticate, getComments);
+
 
 export default router;

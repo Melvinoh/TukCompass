@@ -30,7 +30,7 @@ export const uploadUnitPDF = async (req,res)=>{
 
         const newContent = await UnitContent.create({
             unitID,
-            pdfURL: result.secure_url,
+            pdfUrl: result.secure_url,
             fileName,
             uploadedBy
         })

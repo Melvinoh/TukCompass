@@ -26,5 +26,4 @@ export const Comments = sequelize.define('comments_tb', {
             key: "userID"
         }
     }
-
 });
