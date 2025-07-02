@@ -1,7 +1,7 @@
 import express from "express"
-import {creatClubSport,getClubSport,getClubSportID} from "../../controllers/club&Sports/c&sController.js"
+import {creatClubSport,enrollClubSport,getClubSport,getClubSportID, getMembers,getGallery,updateClubSport} from "../../controllers/club&Sports/c&sController.js"
 import { upload } from "../../middlewares/upload.js";
-import { get } from "http";
+import { authenticate } from "../../middlewares/Authenticate.js";
 
 
 const router = express.Router()
@@ -15,6 +15,10 @@ router.post(
     creatClubSport
 );
 router.get('/getClubSport',getClubSport);
+router.patch('/updateClubSport/:id',updateClubSport);
+router.post('/enrollClubSport/:id', authenticate, enrollClubSport);
 router.get('/getClubSport/:id',getClubSportID);
+router.get('/getMembers/:id',getMembers);
+router.get('/getGallery/:id',getGallery);
 
 export default router;

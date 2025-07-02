@@ -1,7 +1,7 @@
 import { sequelize } from '../../config/sequelizeDB.js';
 import { DataTypes } from 'sequelize';
 import {User} from "../Users.js"
-import {Posts} from "./post.js"
+
 
 export const Connects = sequelize.define('connects_tb', {
     connectID:{

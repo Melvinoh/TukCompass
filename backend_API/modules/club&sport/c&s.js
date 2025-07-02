@@ -6,7 +6,6 @@ export const ClubSports = sequelize.define('c&s_tb', {
     clubSportsID:{
         type: DataTypes.STRING(40),
         primaryKey: true,
-        defaultValue: DataTypes.UUIDV4(30)
     },
     name: {
         type: DataTypes.STRING(30)

@@ -15,7 +15,7 @@ export const UnitContent = sequelize.define("unitContent_tb", {
             key: "unitID" 
         }
     },
-    pdfURL: {
+    pdfUrl: {
         type: DataTypes.STRING
     },
     fileName: {

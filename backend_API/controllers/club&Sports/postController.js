@@ -6,7 +6,7 @@ import moment from "moment/moment.js";
 import { cloudinary } from "../../config/cloudinary.js";
 
 export const addpost = async (req, res) => {
-  const { description,clubSportID } = req.body;
+  const { description, clubSportID } = req.body;
   const userID = req.user.userID;
   const date =  moment(Date.now()).format("YYYY-MM-DD HH:mm:ss");
 

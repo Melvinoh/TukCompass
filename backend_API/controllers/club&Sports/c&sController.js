@@ -7,7 +7,7 @@ import { Posts } from "../../modules/club&sport/post.js";
 
 export const creatClubSport = async (req, res) => {
   try {
-    const { clubSportsID, name, type, description, patron } = req.body;
+    const { clubSportID, name, type, description, patron } = req.body;
 
     let profileUrl = null;
     let coverUrl = null;
@@ -37,7 +37,7 @@ export const creatClubSport = async (req, res) => {
     }
 
     const newClubSport = await ClubSports.create({
-      clubSportsID,
+      clubSportID,
       name,
       type,
       profileURL: profileUrl,
@@ -67,7 +67,7 @@ export const getClubSport = async (req,res) => {
     
     const response = await ClubSports.findAll({
       where:{
-        type: 'clubs'
+        type: type
       }
     })
 
@@ -92,11 +92,11 @@ export const getClubSport = async (req,res) => {
   }
 }
 export const getClubSportID = async (req,res) => {
-  const {clubSportsID} = req.params;
+  const {id} = req.params;
   try {
     const response = await ClubSports.findOne({
       where: {
-        clubSportsID
+        clubSportsID: id
       }
     });
 
@@ -120,101 +120,102 @@ export const getClubSportID = async (req,res) => {
 }
 
 export const updateClubSport = async (req, res) => {
-    const { profileUrl, coverUrl, name, description } = req.body;
-    const { clubSportsID } = req.params;
-    try {
-      let updatedProfileUrl = profileUrl;
-      let updatedCoverUrl = coverUrl;
+  const { id } = req.params;
+  const updates = req.body; 
 
-      if (req.files?.profile?.[0]) {
-        const result = await cloudinary.uploader.upload(req.files.profile[0].path, {
-          resource_type: "image",
-          folder: "TukCompass",
-          public_id: req.files.profile[0].originalname
-            .split(".")[0]
-            .replace(/\s+/g, "_")
-            .replace(/[^a-zA-Z0-9_-]/g, "")
-        });
-        updatedProfileUrl = result.secure_url;
-      }
+  try {
+    let profileUrl = null;
+    let coverUrl = null;
 
-      if (req.files?.cover?.[0]) {
-        const result2 = await cloudinary.uploader.upload(req.files.cover[0].path, {
-          resource_type: "image",
-          folder: "TukCompass",
-          public_id: req.files.cover[0].originalname
-            .split(".")[0]
-            .replace(/\s+/g, "_")
-            .replace(/[^a-zA-Z0-9_-]/g, "")
-        });
-        updatedCoverUrl = result2.secure_url;
-      }
-
-      const response = await ClubSports.update(
-        {
-          profileURL: updatedProfileUrl,
-          coverURL: updatedCoverUrl,
-          name,
-          description
-        },
-        {
-          where: {
-            clubSportsID: clubSportsID
-          }
-        }
-      );
-
-      if (!response[0]) {
-        return res.status(404).json({
-          message: "Club or sport not found"
-        });
-      }
-
-      res.status(200).json({
-        message: "Update successful",
-        clubSport: {
-          profileURL: updatedProfileUrl,
-          coverURL: updatedCoverUrl,
-          name,
-          description
-        }
+    if (req.files?.profile?.[0]) {
+      const result = await cloudinary.uploader.upload(req.files.profile[0].path, {
+        resource_type: "image",
+        folder: "TukCompass",
+        public_id: req.files.profile[0].originalname
+          .split(".")[0]
+          .replace(/\s+/g, "_")
+          .replace(/[^a-zA-Z0-9_-]/g, "")
       });
-    } catch (error) {
-      console.error(error);
-      res.status(500).json({
-        message: "Could not update club or sport",
-        error: error.message
-      });
-      
+      profileUrl = result.secure_url;
     }
-}
+
+    if (req.files?.cover?.[0]) {
+      const result2 = await cloudinary.uploader.upload(req.files.cover[0].path, {
+        resource_type: "image",
+        folder: "TukCompass",
+        public_id: req.files.cover[0].originalname
+          .split(".")[0]
+          .replace(/\s+/g, "_")
+          .replace(/[^a-zA-Z0-9_-]/g, "")
+      });
+      coverUrl = result2.secure_url;
+    }
+
+    const updateData = {
+      ...(updates.name && { name: updates.name }),
+      ...(profileUrl && { profileURL: profileUrl }),
+      ...(coverUrl && { coverURL: coverUrl }), 
+      ...(updates.description && { description: updates.description })     
+    };
+
+    const response = await ClubSports.update(updateData, {
+      where: { clubSportID: id }
+    });
+
+    if (!response[0]) {
+      return res.status(404).json({
+        message: "Club or sport not found"
+      });
+    }
+    res.status(200).json({
+      message: "Update successful",
+      clubSport: {
+        ...updateData
+      }
+    });
+
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      message: "Could not update club or sport",
+      error: error.message
+    });
+  }
+};
+
 
 export const enrollClubSport = async (req, res) => {
-  const { clubSportsID } = req.params;
+  const {id} = req.params;
   const userID = req.user.userID;
 
   try {
-    const existingEnrollment = await CS_Members.findOne({ where: { userID, clubSportsID } });
+    const existingEnrollment = await CS_Members.findOne({ where: { userID, clubSportID: id } });
     if (existingEnrollment) {
       return res.status(400).json({ message:"member"});
     }
 // Enroll the user
-    await CS_Members.create({ userID, clubSportsID });
+    await CS_Members.create({ userID, clubSportID: id });
     return res.status(200).json({ message: "Enrolled successfully" });
 
   } catch (error) {
     console.error("Error enrolling in club/sport:", error);
-    return res.status(500).json({ message: "Internal server error" });
+    return res.status(500).json({ 
+      message: "Internal server error",
+      error: error.message
+     });
   }
 }
 export const getMembers = async (req, res) => {
-  const { clubSportsID } = req.params;
+  const {id} = req.params;
+  console.log(id);
   try {
     const members = await CS_Members.findAll({
-      where: { clubSportsID },
+      where: {clubSportID: id},
+      attributes: ['userID', 'clubSportID'],
       include: [{
         model: User,
-        as: 'user'
+        as: 'user',
+        attributes: ['profileUrl', 'fname','sname'],
       }]
     });
 
@@ -233,11 +234,11 @@ export const getMembers = async (req, res) => {
 }
 
 export const getGallery = async (req, res) => {
-  const { clubSportsID } = req.params;
+  const {id} = req.params;
   try {
     const gallery = await CS_Posts.findAll({
       where: {
-         clubSportsID
+         clubSportID: id
       },
       include: [{
         model: Posts,

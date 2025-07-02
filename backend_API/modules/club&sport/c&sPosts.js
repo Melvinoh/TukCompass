@@ -3,7 +3,7 @@ import { DataTypes } from 'sequelize';
 import {Posts} from "./post.js"
 import {ClubSports} from "./c&s.js"
 
-export const CS_Posts = sequelize.define('c&sPosts_tb', {
+export const CS_Posts = sequelize.define('csPosts_tb', {
     csPostID:{
         type: DataTypes.STRING(40),
         primaryKey: true,

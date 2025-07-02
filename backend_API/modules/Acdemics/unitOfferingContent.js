@@ -15,7 +15,7 @@ export const UnitOfferingContent = sequelize.define("unitOfferingContent_tb", {
             key: "unitOfferingID"
         }
     },
-    videoURL:{
+    videoUrl:{
         type: DataTypes.STRING
     },
     link: {

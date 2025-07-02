@@ -19,6 +19,7 @@ import commentRoutes from "./Routers/c&s/commentRoutes.js";
 import connectRoutes from "./Routers/c&s/connectRoutes.js";
 import likeRoutes from "./Routers/c&s/likeRoutes.js";
 import postRoutes from "./Routers/c&s/postRoutes.js";
+import authRoutes from "./Routers/authenticationRouter.js";
 
 
 
@@ -26,6 +27,7 @@ const app = express();
 
 app.use(express.json());
 app.use("/api/registration", registrationRoutes);
+app.use("/api/auth", authRoutes);
 app.use("/api/class", classRoutes);
 app.use("/api/course", courseRoutes);
 app.use("/api/school", schoolRoutes);
