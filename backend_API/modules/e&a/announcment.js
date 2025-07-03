@@ -1,9 +1,9 @@
 import { sequelize } from "../../config/sequelizeDB.js";
 import { DataTypes } from "sequelize";
 import { User } from "../Users.js";
+import { School } from "../Acdemics/schools.js";
 
 export const Announcements = sequelize.define('announcment_tb',{
-
     announcmentID:{
         type: DataTypes.STRING(40),
         primaryKey: true,
@@ -12,24 +12,24 @@ export const Announcements = sequelize.define('announcment_tb',{
     title:{
         type: DataTypes.STRING(40),
     },
-    description:{
+    message:{
+        type: DataTypes.TEXT,
+    },
+    fileUrl:{
         type: DataTypes.TEXT,
     },
     date:{
         type: DataTypes.STRING(40),
     },
-    expireyDate:{
-        type: DataTypes.STRING(40),
-    },
-    time:{
-        type: DataTypes.STRING(40),
-    },
     targetGroup:{
         type: DataTypes.ENUM('all','lecturers','specific'),
     },
-    fileUrl:{
-        type: DataTypes.TEXT,
-        defaultValue: 'all'
+    schoolID:{
+        type: DataTypes.STRING(20),
+        references: {
+            model: School,
+            key: 'schoolID'
+        }
     },
     createdBy:{
         type: DataTypes.STRING(20),
@@ -37,5 +37,8 @@ export const Announcements = sequelize.define('announcment_tb',{
             model: User,
             key: 'userID'
         }
+    },
+    createdAt:{
+        type: DataTypes.STRING(20),
     },
 })

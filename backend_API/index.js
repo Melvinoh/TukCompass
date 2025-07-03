@@ -1,6 +1,7 @@
 import express  from "express";
 import "./modules/Acdemics/Relationship.js";
 import "./modules/club&sport/relationships.js"
+import "./modules/e&a/indexR.js"
 
 import registrationRoutes from "./Routers/academics/registrationRoutes.js";
 import classRoutes from "./Routers/academics/classRoutes.js";
@@ -20,6 +21,9 @@ import connectRoutes from "./Routers/c&s/connectRoutes.js";
 import likeRoutes from "./Routers/c&s/likeRoutes.js";
 import postRoutes from "./Routers/c&s/postRoutes.js";
 import authRoutes from "./Routers/authenticationRouter.js";
+
+import eventRoutes from "./Routers/e&a/eventRoutes.js"
+
 
 
 
@@ -44,6 +48,8 @@ app.use("/api/comments",commentRoutes);
 app.use("/api/connects",connectRoutes);
 app.use("/api/likes",likeRoutes);
 app.use("/api/posts",postRoutes);
+
+app.use("/api/events", eventRoutes);
 
 app.listen(3000, () => {
     console.log('Server running on port 3000');

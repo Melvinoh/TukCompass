@@ -31,7 +31,6 @@ export const Events = sequelize.define('events_tb',{
     },
     fileUrl:{
         type: DataTypes.TEXT,
-        defaultValue: 'all'
     },
     createdBy:{
         type: DataTypes.STRING(20),
@@ -39,5 +38,8 @@ export const Events = sequelize.define('events_tb',{
             model: User,
             key: 'userID'
         }
+    },
+    createdAt:{
+        type: DataTypes.STRING(20),
     },
 })
