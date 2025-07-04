@@ -1,3 +1,4 @@
+import { fileURLToPath } from "url";
 import { cloudinary } from "../../config/cloudinary.js";
 import { Events } from "../../modules/e&a/events.js";
 import fs from "fs/promises";
@@ -88,4 +89,89 @@ export const getEventById = async (req, res) => {
             error: error.message
         });
     }
+}
+
+export const deleteEvent = async (req, res) => {
+    try {
+        const { id } = req.params;
+
+        const event = await Events.findOne({
+            where: { eventID:id }
+        });
+
+        if (!event) {
+            return res.status(404).json({ message: "event not found" });
+        }
+
+        await Events.destroy({
+            where: { eventID:id  }
+        });
+
+        res.status(200).json({
+            message: "event deleted successfully"
+        });
+    } catch (error) {
+        console.error("Error deleting event:", error);
+        res.status(500).json({
+            message: "Internal server error",
+            error: error.message
+        });
+    }
+}
+
+
+export const updateEvent = async (req, res) =>{
+
+    console.log(req.body);
+    const { title, description, location, date, expireyDate, time, targetGroup } = req.body;
+    const { id } = req.params;
+    const {userID} = req.user;
+
+    try {
+
+       let uploadedFileUrl = null;
+
+        if (req.file?.path) {
+            const fileUrl = await cloudinary.uploader.upload(req.file.path, {
+                resource_type: "auto",
+                folder: "events",
+                public_id: req.file.originalname
+                    .split(".")[0]
+                    .replace(/\s+/g, "_")
+                    .replace(/[^a-zA-Z0-9_-]/g, "")
+            });
+             uploadedFileUrl = fileUrl.secure_url;
+             await fs.unlink(req.file.path)
+        }
+        
+
+        const event = await Events.findOne({ where: { eventID : id } });
+
+        if (!event) {
+            return res.status(404).json({ message: "event not found" });
+        }
+        if(event.createdBy !== userID){
+           return res.status(400).json({ message: "you can only update events you created" });
+        }
+
+        event.title = title || event.title;
+        event.description = description || event.description;
+        event.location = location || event.location;
+        event.date = date || event.date;
+        event.expireyDate = expireyDate || event.expireyDate;
+        event.time = time || event.time;
+        event.targetGroup = targetGroup || event.targetGroup;
+        if (uploadedFileUrl) event.fileUrl = uploadedFileUrl;
+
+        await event.save();
+
+        res.status(200).json({ message: "event updated successfully", event });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ 
+            message: "An error occurred while updating the event",
+            error: error.message
+        });
+    }
+
 }

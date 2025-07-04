@@ -27,7 +27,7 @@ export const Events = sequelize.define('events_tb',{
         type: DataTypes.STRING(40),
     },
     targetGroup:{
-        type: DataTypes.ENUM('all','lecturers','specific'),
+        type: DataTypes.ENUM('all','lecturers','students'),
     },
     fileUrl:{
         type: DataTypes.TEXT,

@@ -3,14 +3,14 @@ import { DataTypes } from "sequelize";
 import { User } from "../Users.js";
 import { School } from "../Acdemics/schools.js";
 
-export const Announcements = sequelize.define('announcment_tb',{
+export const Announcments = sequelize.define('announcment_tb',{
     announcmentID:{
         type: DataTypes.STRING(40),
         primaryKey: true,
         defaultValue: DataTypes.UUIDV4()
     },
     title:{
-        type: DataTypes.STRING(40),
+        type: DataTypes.STRING,
     },
     message:{
         type: DataTypes.TEXT,
@@ -18,11 +18,8 @@ export const Announcements = sequelize.define('announcment_tb',{
     fileUrl:{
         type: DataTypes.TEXT,
     },
-    date:{
-        type: DataTypes.STRING(40),
-    },
     targetGroup:{
-        type: DataTypes.ENUM('all','lecturers','specific'),
+        type: DataTypes.ENUM('all','lecturers','students'),
     },
     schoolID:{
         type: DataTypes.STRING(20),

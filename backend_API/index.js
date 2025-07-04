@@ -23,13 +23,11 @@ import postRoutes from "./Routers/c&s/postRoutes.js";
 import authRoutes from "./Routers/authenticationRouter.js";
 
 import eventRoutes from "./Routers/e&a/eventRoutes.js"
-
-
-
+import annoncmentRoutes from "./Routers/e&a/annoncmentRoutes.js"
 
 const app = express();
-
 app.use(express.json());
+
 app.use("/api/registration", registrationRoutes);
 app.use("/api/auth", authRoutes);
 app.use("/api/class", classRoutes);
@@ -50,6 +48,8 @@ app.use("/api/likes",likeRoutes);
 app.use("/api/posts",postRoutes);
 
 app.use("/api/events", eventRoutes);
+app.use("/api/announcment", annoncmentRoutes);
+
 
 app.listen(3000, () => {
     console.log('Server running on port 3000');
