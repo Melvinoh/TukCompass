@@ -10,7 +10,7 @@ const router = express.Router();
 router.post("/createEvent", authenticate, upload.single("file"), createEvent);
 router.get("/getEvents", getAllEvents);
 router.get("/getEvents/:id", getEventById);
-router.patch('/updateEvent/:id', authenticate,upload.single("file"), updateEvent);
+router.patch('/updateEvent/:id', authenticate, upload.single("file"), updateEvent);
 router.delete('/deleteEvent/:id', deleteEvent);
 
 export default router;

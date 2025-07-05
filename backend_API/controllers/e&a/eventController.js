@@ -143,14 +143,12 @@ export const updateEvent = async (req, res) =>{
              uploadedFileUrl = fileUrl.secure_url;
              await fs.unlink(req.file.path)
         }
-        
-
         const event = await Events.findOne({ where: { eventID : id } });
 
         if (!event) {
             return res.status(404).json({ message: "event not found" });
         }
-        if(event.createdBy !== userID){
+        if( event.createdBy !== userID ){
            return res.status(400).json({ message: "you can only update events you created" });
         }
 
@@ -166,7 +164,9 @@ export const updateEvent = async (req, res) =>{
         await event.save();
 
         res.status(200).json({ message: "event updated successfully", event });
+
     } catch (error) {
+
         console.error(error);
         res.status(500).json({ 
             message: "An error occurred while updating the event",

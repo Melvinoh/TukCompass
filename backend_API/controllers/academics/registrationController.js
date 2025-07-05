@@ -13,17 +13,16 @@ export const userRegistration = async (req, res) =>{
 
     const t =  await sequelize.transaction();
     try {
-        const{ fname, sname, email, userID,  role, mobile, courseName, enrolmentYear, password,departmentName}= req.body
+        const{ fname, lname, email, userID,  role, courseName, enrolmentYear, password,departmentName}= req.body
         const salt = bcrypt.genSaltSync(10);
         const hashPassword = bcrypt.hashSync(password, salt);
         const newUser = await User.create({
             userID, 
             fname, 
-            sname, 
+            sname: lname, 
             email, 
             password: hashPassword,
             role,
-            mobile
          }, {transaction: t })
 
         if (role === 'student') {
@@ -72,7 +71,7 @@ export const userRegistration = async (req, res) =>{
 }
 
 export const updateUser = async (req, res) =>{
-    const { fname, sname, email, mobile } = req.body;
+    const { fname, lname, email, mobile } = req.body;
 
     const {userID} = req.user;
 
@@ -102,7 +101,7 @@ export const updateUser = async (req, res) =>{
         }
 
         user.fname = fname || user.fname;
-        user.sname = sname || user.sname;
+        user.sname = lname || user.sname;
         user.email = email || user.email;
         user.mobile = mobile || user.mobile;
         user.profileUrl = profileUrl.secure_url || user.profileUrl;
