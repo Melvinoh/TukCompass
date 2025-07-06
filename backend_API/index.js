@@ -28,7 +28,11 @@ import annoncmentRoutes from "./Routers/e&a/annoncmentRoutes.js"
 const app = express();
 app.use(express.json());
 
-app.use("/","welcome to TukCompass API")
+const welcome = (req, res) => {
+  res.send("Welcome to TukCompass API");
+};
+
+app.get("/", welcome);
 app.use("/api/registration", registrationRoutes);
 app.use("/api/auth", authRoutes);
 app.use("/api/class", classRoutes);
