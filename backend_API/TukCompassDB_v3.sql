@@ -31,7 +31,7 @@ CREATE TABLE `LecturerUnits` (
   KEY `unitID` (`unitID`),
   CONSTRAINT `LecturerUnits_ibfk_11` FOREIGN KEY (`lecturerID`) REFERENCES `lecturers_tb` (`lecturerID`),
   CONSTRAINT `LecturerUnits_ibfk_12` FOREIGN KEY (`unitID`) REFERENCES `units_tb` (`unitID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -64,7 +64,7 @@ CREATE TABLE `announcment_tb` (
   KEY `schoolID` (`schoolID`),
   CONSTRAINT `announcment_tb_ibfk_7` FOREIGN KEY (`createdBy`) REFERENCES `user_tb` (`userID`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `announcment_tb_ibfk_8` FOREIGN KEY (`schoolID`) REFERENCES `school_tb` (`schoolID`) ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -96,7 +96,7 @@ CREATE TABLE `c&sMembers_tb` (
   CONSTRAINT `c&sMembers_tb_ibfk_1` FOREIGN KEY (`clubSportID`) REFERENCES `c&s_tb` (`clubSportsID`),
   CONSTRAINT `c&sMembers_tb_ibfk_2` FOREIGN KEY (`userID`) REFERENCES `user_tb` (`userID`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `c&sMembers_tb_ibfk_3` FOREIGN KEY (`clubSportsID`) REFERENCES `c&s_tb` (`clubSportsID`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -126,7 +126,7 @@ CREATE TABLE `c&s_tb` (
   PRIMARY KEY (`clubSportsID`),
   KEY `patron` (`patron`),
   CONSTRAINT `c&s_tb_ibfk_1` FOREIGN KEY (`patron`) REFERENCES `user_tb` (`userID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -160,7 +160,7 @@ CREATE TABLE `class_tb` (
   KEY `classRep` (`classRep`),
   CONSTRAINT `class_tb_ibfk_93` FOREIGN KEY (`courseID`) REFERENCES `course_tb` (`courseID`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `class_tb_ibfk_94` FOREIGN KEY (`classRep`) REFERENCES `user_tb` (`userID`) ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -190,7 +190,7 @@ CREATE TABLE `comments_tb` (
   KEY `userID` (`userID`),
   CONSTRAINT `comments_tb_ibfk_27` FOREIGN KEY (`postID`) REFERENCES `posts_tb` (`postID`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `comments_tb_ibfk_28` FOREIGN KEY (`userID`) REFERENCES `user_tb` (`userID`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -218,7 +218,7 @@ CREATE TABLE `connects_tb` (
   KEY `followerID` (`followerID`),
   CONSTRAINT `connects_tb_ibfk_1` FOREIGN KEY (`followingID`) REFERENCES `user_tb` (`userID`) ON UPDATE CASCADE,
   CONSTRAINT `connects_tb_ibfk_2` FOREIGN KEY (`followerID`) REFERENCES `user_tb` (`userID`) ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -245,7 +245,7 @@ CREATE TABLE `course_tb` (
   PRIMARY KEY (`courseID`),
   KEY `departmentID` (`departmentID`),
   CONSTRAINT `course_tb_ibfk_1` FOREIGN KEY (`departmentID`) REFERENCES `department_tb` (`departmentID`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -276,7 +276,7 @@ CREATE TABLE `course_unit_tb` (
   KEY `unitID` (`unitID`),
   CONSTRAINT `course_unit_tb_ibfk_83` FOREIGN KEY (`courseID`) REFERENCES `course_tb` (`courseID`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `course_unit_tb_ibfk_84` FOREIGN KEY (`unitID`) REFERENCES `units_tb` (`unitID`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -305,7 +305,7 @@ CREATE TABLE `csMembers_tb` (
   KEY `userID` (`userID`),
   CONSTRAINT `csMembers_tb_ibfk_17` FOREIGN KEY (`clubSportID`) REFERENCES `c&s_tb` (`clubSportsID`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `csMembers_tb_ibfk_18` FOREIGN KEY (`userID`) REFERENCES `user_tb` (`userID`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -334,7 +334,7 @@ CREATE TABLE `csPosts_tb` (
   KEY `postID` (`postID`),
   CONSTRAINT `csPosts_tb_ibfk_23` FOREIGN KEY (`clubSportID`) REFERENCES `c&s_tb` (`clubSportsID`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `csPosts_tb_ibfk_24` FOREIGN KEY (`postID`) REFERENCES `posts_tb` (`postID`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -364,7 +364,7 @@ CREATE TABLE `department_tb` (
   KEY `departmentHeadID` (`departmentHeadID`),
   CONSTRAINT `department_tb_ibfk_100` FOREIGN KEY (`departmentHeadID`) REFERENCES `user_tb` (`userID`) ON UPDATE CASCADE,
   CONSTRAINT `department_tb_ibfk_99` FOREIGN KEY (`schoolID`) REFERENCES `school_tb` (`schoolID`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -399,7 +399,7 @@ CREATE TABLE `events_tb` (
   PRIMARY KEY (`eventID`),
   KEY `createdBy` (`createdBy`),
   CONSTRAINT `events_tb_ibfk_1` FOREIGN KEY (`createdBy`) REFERENCES `user_tb` (`userID`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -426,7 +426,7 @@ CREATE TABLE `faculty_tb` (
   PRIMARY KEY (`facultyID`),
   KEY `deanID` (`deanID`),
   CONSTRAINT `faculty_tb_ibfk_1` FOREIGN KEY (`deanID`) REFERENCES `user_tb` (`userID`) ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -453,7 +453,7 @@ CREATE TABLE `lecturers_tb` (
   KEY `departmentID` (`departmentID`),
   CONSTRAINT `lecturers_tb_ibfk_1` FOREIGN KEY (`lecturerID`) REFERENCES `user_tb` (`userID`) ON UPDATE CASCADE,
   CONSTRAINT `lecturers_tb_ibfk_2` FOREIGN KEY (`departmentID`) REFERENCES `department_tb` (`departmentID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -482,7 +482,7 @@ CREATE TABLE `likes_tb` (
   KEY `userID` (`userID`),
   CONSTRAINT `likes_tb_ibfk_27` FOREIGN KEY (`postID`) REFERENCES `posts_tb` (`postID`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `likes_tb_ibfk_28` FOREIGN KEY (`userID`) REFERENCES `user_tb` (`userID`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -511,7 +511,7 @@ CREATE TABLE `posts_tb` (
   PRIMARY KEY (`postID`),
   KEY `userID` (`userID`),
   CONSTRAINT `posts_tb_ibfk_1` FOREIGN KEY (`userID`) REFERENCES `user_tb` (`userID`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -540,7 +540,7 @@ CREATE TABLE `scheduleCourse_tb` (
   KEY `scheduleID` (`scheduleID`),
   CONSTRAINT `scheduleCourse_tb_ibfk_57` FOREIGN KEY (`courseID`) REFERENCES `course_tb` (`courseID`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `scheduleCourse_tb_ibfk_58` FOREIGN KEY (`scheduleID`) REFERENCES `schedule_tb` (`scheduleID`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -570,7 +570,7 @@ CREATE TABLE `schedule_tb` (
   PRIMARY KEY (`scheduleID`),
   KEY `unitOfferingID` (`unitOfferingID`),
   CONSTRAINT `schedule_tb_ibfk_1` FOREIGN KEY (`unitOfferingID`) REFERENCES `unitOffering_tb` (`unitOfferingID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -603,7 +603,7 @@ CREATE TABLE `school_tb` (
   CONSTRAINT `school_tb_ibfk_47` FOREIGN KEY (`facultyID`) REFERENCES `faculty_tb` (`facultyID`) ON UPDATE CASCADE,
   CONSTRAINT `school_tb_ibfk_48` FOREIGN KEY (`schoolHeadID`) REFERENCES `user_tb` (`userID`) ON UPDATE CASCADE,
   CONSTRAINT `school_tb_ibfk_49` FOREIGN KEY (` facultyID`) REFERENCES `faculty_tb` (`facultyID`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -632,7 +632,7 @@ CREATE TABLE `students_tb` (
   KEY `classID` (`classID`),
   CONSTRAINT `students_tb_ibfk_113` FOREIGN KEY (`courseID`) REFERENCES `course_tb` (`courseID`) ON UPDATE CASCADE,
   CONSTRAINT `students_tb_ibfk_114` FOREIGN KEY (`classID`) REFERENCES `class_tb` (`classID`) ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -663,7 +663,7 @@ CREATE TABLE `unitContent_tb` (
   PRIMARY KEY (`contentID`),
   KEY `unitID` (`unitID`),
   CONSTRAINT `unitContent_tb_ibfk_1` FOREIGN KEY (`unitID`) REFERENCES `units_tb` (`unitID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -694,7 +694,7 @@ CREATE TABLE `unitEnrollment_tb` (
   KEY `unitOfferingID` (`unitOfferingID`),
   CONSTRAINT `unitEnrollment_tb_ibfk_59` FOREIGN KEY (`studentID`) REFERENCES `students_tb` (`studentID`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `unitEnrollment_tb_ibfk_60` FOREIGN KEY (`unitOfferingID`) REFERENCES `unitOffering_tb` (`unitOfferingID`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -725,7 +725,7 @@ CREATE TABLE `unitOfferingContent_tb` (
   PRIMARY KEY (`offeringContentID`),
   KEY `unitOfferingID` (`unitOfferingID`),
   CONSTRAINT `unitOfferingContent_tb_ibfk_1` FOREIGN KEY (`unitOfferingID`) REFERENCES `unitOffering_tb` (`unitOfferingID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -756,7 +756,7 @@ CREATE TABLE `unitOffering_tb` (
   KEY `unitID` (`unitID`),
   CONSTRAINT `unitOffering_tb_ibfk_59` FOREIGN KEY (`lecturerID`) REFERENCES `lecturers_tb` (`lecturerID`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `unitOffering_tb_ibfk_60` FOREIGN KEY (`unitID`) REFERENCES `units_tb` (`unitID`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -781,7 +781,7 @@ CREATE TABLE `units_tb` (
   `unitName` varchar(50) NOT NULL,
   `unitDescription` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`unitID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -811,14 +811,13 @@ CREATE TABLE `user_tb` (
   `mobile` varchar(15) DEFAULT NULL,
   `profileUrl` varchar(100) DEFAULT NULL,
   PRIMARY KEY (`userID`),
-  UNIQUE KEY `email` (`email`),
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+  UNIQUE KEY `email` (`email`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Dumping data for table `user_tb`
 --
- 
 LOCK TABLES `user_tb` WRITE;
 /*!40000 ALTER TABLE `user_tb` DISABLE KEYS */;
 INSERT INTO `user_tb` VALUES ('ACSI/001','Dr samson','Njuki','snjuki@tukenya.ac.ke','$2b$10$n3LUpsebOd4Zgt66mFtjhuLWmZmzSjIV3DmtDIkAuB1RoqAsy8Wj2','lecturer',NULL,NULL),('ACSI/003','Dr Edwin','Obare','obare@tukenya.ac.ke','$2b$10$61/YshEaWZSIyDR77Yj8xO.lMxOwc.kphAVEL4wIaZceg4xY0am9O','lecturer',NULL,NULL),('ACSI/005','Luke','Otieno','luke@tukenya.ac.ke','$2b$10$BdpJmgpVIeAp0Oq3giyMju7vl7PU2if0Oa1x0eG4iI7ySmb1EweNW','lecturer',NULL,NULL),('ACSI/006','peter','Mulei','muleiPeter@tukenya.ac.ke','$2b$10$CuiSpxBIhm/7BCj.pS7yUO8pE1EzBOacgF9oKF5OxnJ8sfglc3F9O','lecturer',NULL,NULL),('ACSI/007','Lucy','Abwotha','Abwothalucy@gmail.com','$2b$10$HzbCcVuAS4R61CW/zdQ7wO6RAGSlW42qHitZ8VevXuA4cwVOm/yUq','lecturer',NULL,NULL),('ACSI/014','Amstrong','Muasya','muasyaAmstrong@gmail.com','$2b$10$ybc.7VUJ90AVXfwOAWs5buDFLi2peafDsMjW5k5VOT58ODfn./0n6','lecturer',NULL,NULL),('ACSI/016','Mary','Nguchu','nguchuMary@tukenya.ac.ke','$2b$10$BuRoz7sCu1CgvInNmyjANOXbUBNfLy2wv63R2b.16vsUwTI/5ziMe','lecturer',NULL,NULL),('SCCI/00573/2020','Muturi','Melvin','melvinmurichu@gmail.com','$2b$10$fB66qgZmjoFXRT0n0IUT/eDj9NTAi4qUkHxtybhFgXys6LxS/ytei','student',NULL,NULL),('SCCI/00574/2021','john','kelvin','kelvin@gmail.com','$2b$10$li/V0iNeKIcclvun3Ll77OjFRA8KnILLNopVXXIi/4AsQX7j.s13q','student',NULL,NULL),('SCCI/00594/2021','Milly','Kagweru','kagweru@gmail.com','$2b$10$ZsnM3I7VToHMn7NnhjZUl.Uwv9f01Gbo4IR8HvN2Etqj6P.tYCDXa','student',NULL,NULL),('SCCI/00604/2021','Eunice','Nyambura','enyambura@gmail.com','$2b$10$umZehWsd5gjlx2QRgpyNDepUV0WCZi8tvrQQXQ3IErP0YhezLowyq','student',NULL,NULL),('SCCI/00605/2021','Felistus','Kioko','kioko@gmail.com','$2b$10$XWGulW/3seWux.zl49brpuARW5Z/PbGJ5UnzY0jnXEb7qGPVYPCmu','student',NULL,NULL),('SCCI/03853P/2021','Amalemba','Victor','amalemba@gmail.com','$2b$10$wJ96f5xU6lQSKBmTLHgRE.payVChAm7yP/H/jI51OQST.JvW0zfh.','student',NULL,NULL),('SCCI/0624/2021','Joshua','Omwami','Omwamijosh@gmail.com','$2b$10$HbwG5dhbeD9On.5bWN3IW.x9l.O7fWJeF.DKkb8cviPdnCCSziA5G','student','0796453897','https://res.cloudinary.com/dkc2oujm6/image/upload/v1751478633/profile/st1.jpg'),('SCII/00659/2021','Sharon','Otieno','otieno@gmail.com','$2b$10$KAlZ31fCDwsi8rOKiCdogOJXWj6lhrgo.2AS87TJyhD8kqhTJEPy2','student',NULL,NULL),('SCII/01060/2021','Mathew','maingi','maingi@gmail.com','$2b$10$bj8dTHahWqFt64K4FW2WKubstNKiNBIY3vyv6g5vu1EDYhbpChmbO','student',NULL,NULL),('SCNI/01290/2021','Bervely','Boyani','boyani@gmail.com','$2b$10$41KLGT8sdox4UDSrjwV/I.8.9ZqY1549SwTy0/POLPAor0cAaGmAW','student','0756789808','https://res.cloudinary.com/dkc2oujm6/image/upload/v1751479027/profile/20211231_123143.jpg'),('SCNI/01298/2021','Taff','Nyamita','nyamita@gmail.com','$2b$10$Cajca10HOKT32ZPQ9/svVODQ4SqRieus1guRe61e1SO9FtyAZP2/G','student',NULL,NULL);
