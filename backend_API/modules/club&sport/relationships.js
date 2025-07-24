@@ -17,6 +17,9 @@ ClubSports.belongsToMany(Posts, { through: CS_Posts, foreignKey: 'clubSportID', 
 CS_Members.belongsTo(User, { foreignKey: 'userID', as: 'user' });
 User.hasMany(CS_Members, { foreignKey: 'userID', onDelete: "CASCADE", hooks: true }); 
 
+CS_Members.belongsTo(ClubSports, { foreignKey: 'clubSportID', as: 'clubSport' });
+ClubSports.hasMany(CS_Members, { foreignKey: 'clubSportID', onDelete: "CASCADE", hooks: true });
+
 CS_Posts.belongsTo(ClubSports, { foreignKey: 'clubSportID'})
 ClubSports.hasMany(CS_Posts, { foreignKey: 'clubSportID', onDelete: "CASCADE", hooks: true });
 

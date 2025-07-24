@@ -1,5 +1,5 @@
 import express from "express"
-import {creatClubSport,enrollClubSport,getClubSport,getClubSportID, getMembers,getGallery,updateClubSport} from "../../controllers/club&Sports/c&sController.js"
+import {creatClubSport,enrollClubSport,getClubSport,getClubSportID, getMembers,getGallery,updateClubSport,myclubs} from "../../controllers/club&Sports/c&sController.js"
 import { upload } from "../../middlewares/upload.js";
 import { authenticate } from "../../middlewares/Authenticate.js";
 
@@ -20,5 +20,6 @@ router.post('/enrollClubSport/:id', authenticate, enrollClubSport);
 router.get('/getClubSport/:id',getClubSportID);
 router.get('/getMembers/:id',getMembers);
 router.get('/getGallery/:id',getGallery);
+router.get('/getMyClubs', authenticate, myclubs);
 
 export default router;

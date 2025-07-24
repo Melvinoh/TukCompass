@@ -59,7 +59,7 @@ export const getAnnouncments = async (req, res) => {
 
         res.status(200).json({
             message: "Announcments retrieved successfully",
-            announcments
+            announcements: announcments
         });
     } catch (error) {
         console.error("Error retrieving announcments:", error);
