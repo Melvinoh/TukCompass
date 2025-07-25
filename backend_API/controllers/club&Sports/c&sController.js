@@ -99,13 +99,11 @@ export const getClubSportID = async (req,res) => {
         clubSportsID: id
       }
     });
-
     if (!response) {
       return res.status(404).json({
         message: "Club or sport not found"
       });
     }
-
     res.status(200).json({
       message: "Fetch successful",
       clubSport: response
@@ -215,7 +213,7 @@ export const myclubs = async (req,res) => {
   try {
     const clubs = await CS_Members.findAll({
       where: { userID },
-      attributes: ['userID'],
+      attributes: ['clubSportID'],
       include: [{
         model: ClubSports,
         as: 'clubSport',
@@ -226,8 +224,8 @@ export const myclubs = async (req,res) => {
       return res.status(404).json({ message: "No clubs found for this user" });
     }
     return res.status(200).json({
-      message: "User's clubs retrieved successfully",
-      clubs: clubs
+      message: "Clubs fetched successfully",
+      clubSports: clubs.map(club => club.clubSport)
     });
   } catch (error) {
     console.error("Error fetching user's clubs:", error);
