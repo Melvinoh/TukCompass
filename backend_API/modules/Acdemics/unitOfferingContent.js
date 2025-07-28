@@ -32,3 +32,4 @@ export const UnitOfferingContent = sequelize.define("unitOfferingContent_tb", {
         defaultValue: DataTypes.NOW
     }
 });
+

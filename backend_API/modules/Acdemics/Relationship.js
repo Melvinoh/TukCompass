@@ -56,13 +56,23 @@ Course.belongsToMany(Unit, { through: CourseUnit, foreignKey: 'courseID' })
 Schedule.belongsToMany(Course, { through: ScheduleCourse, foreignKey: 'scheduleID' })
 Course.belongsToMany(Schedule, { through: ScheduleCourse, foreignKey: 'courseID' })
 
+Schedule.belongsTo(UnitOffering, { foreignKey: "unitOfferingID" });
+UnitOffering.hasMany(Schedule, { foreignKey: "unitOfferingID" });
+
 Unit.belongsToMany(Lecturer, { through: UnitOffering, foreignKey: 'unitID' })
 Lecturer.belongsToMany(Unit, { through: UnitOffering, foreignKey: 'lecturerID' })
 
 UnitOffering.belongsToMany(Student, { through: UnitEnrollment, foreignKey: 'unitOfferingID' })
 Student.belongsToMany(UnitOffering, { through: UnitEnrollment, foreignKey: 'studentID' })
 
+UnitEnrollment.belongsTo(UnitOffering, { foreignKey: 'unitOfferingID' });
+UnitOffering.hasMany(UnitEnrollment, { foreignKey: 'unitOfferingID' });
 
+UnitOffering.belongsTo(Unit, {foreignKey: "unitID"});
+Unit.hasMany(UnitOffering, {foreignKey: "unitID"});
 
+UnitOffering.belongsTo(Unit, { foreignKey: 'unitID'});
+UnitOffering.belongsTo(Lecturer, { foreignKey: 'lecturerID'});
 
-
+Unit.hasMany(UnitOffering, { foreignKey: 'unitID', as: 'offerings' });
+Lecturer.hasMany(UnitOffering, { foreignKey: 'lecturerID', as: 'offerings' });

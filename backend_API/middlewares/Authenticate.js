@@ -3,6 +3,7 @@ import { User } from '../modules/Users.js';
 
 const secretKey = process.env.JWT_SECRET;
 
+
 export const authenticate = async (req, res, next) => {
   const authHeader = req.headers.authorization
 
