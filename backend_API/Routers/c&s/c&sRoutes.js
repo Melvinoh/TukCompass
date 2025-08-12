@@ -14,9 +14,9 @@ router.post(
     ]),
     creatClubSport
 );
-router.get('/getClubSport',getClubSport);
+router.get('/getClubSport' ,authenticate, getClubSport);
 router.patch('/updateClubSport/:id',updateClubSport);
-router.post('/enrollClubSport/:id', authenticate, enrollClubSport);
+router.post('/enrollClubSport', authenticate, enrollClubSport);
 router.get('/getClubSport/:id',getClubSportID);
 router.get('/getMembers/:id',getMembers);
 router.get('/getGallery/:id',getGallery);

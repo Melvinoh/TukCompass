@@ -7,40 +7,42 @@ import { cloudinary } from "../../config/cloudinary.js";
 import { CS_Members } from "../../modules/club&sport/c&sMembers.js";
 
 export const addpost = async (req, res) => {
-
-  let id = 'CON-001';
-  id = req.params.id;
-  
-  const { description } = req.body;
-  const userID = req.user.userID;
-  const date =  moment(Date.now()).format("YYYY-MM-DD HH:mm:ss");
-
-  const t = await sequelize.transaction();
-
-  const user = await CS_Members.findOne({
-    where: { userID },
-    transaction: t
-  });
-
-  if (!user) {
-    await t.rollback();
-    return res.status(404).json({ message: "You are not a member of this club kindly enroll" });
-  }
-
-  let imageURL= null;
-  if (req.file) {
-  const result = await cloudinary.uploader.upload(req.file.path, {
-      resource_type: "image",
-      folder: "posts",
-      public_id: req.file.originalname
-      .split(".")[0]
-      .replace(/\s+/g, "_")
-      .replace(/[^a-zA-Z0-9_-]/g, "")
-  });
-  imageURL = result.secure_url;
-  }
-
   try {
+
+    const { description, clubID } = req.body;
+    const userID = req.user.userID;
+    const date = moment.utc().format("YYYY-MM-DD HH:mm:ss");
+
+    const t = await sequelize.transaction();
+
+    const user = await CS_Members.findOne({
+      where: { userID, clubSportID: clubID },
+      transaction: t
+    });
+
+    if (!user) {
+      await t.rollback();
+      return res.status(404).json({ message: "You are not a member of this club. Kindly enroll." });
+    }
+
+    let imageURL = null;
+    if (req.file) {
+      try {
+        const result = await cloudinary.uploader.upload(req.file.path, {
+          resource_type: "image",
+          folder: "posts",
+          public_id: req.file.originalname
+            .split(".")[0]
+            .replace(/\s+/g, "_")
+            .replace(/[^a-zA-Z0-9_-]/g, "")
+        });
+        imageURL = result.secure_url;
+      } catch (err) {
+        await t.rollback();
+        return res.status(500).json({ message: "Image upload failed", error: err.message });
+      }
+    }
+
     const newPost = await Posts.create({
       description,
       imageURL,
@@ -49,7 +51,7 @@ export const addpost = async (req, res) => {
     }, { transaction: t });
 
     const newCSPost = await CS_Posts.create({
-      clubSportID: id,
+      clubSportID: clubID,
       postID: newPost.postID
     }, { transaction: t });
 
@@ -58,17 +60,17 @@ export const addpost = async (req, res) => {
     return res.status(201).json({
       message: "Post created successfully",
       post: newPost,
-      csPost: newCSPost
     });
 
   } catch (error) {
     console.error("Error creating post:", error);
-    return res.status(500).json({ 
+    return res.status(500).json({
       message: "Internal server error",
       error: error.message
     });
   }
 };
+
 
 export const getPosts = async (req, res) => {
   const {id} = req.params;
@@ -88,13 +90,15 @@ export const getPosts = async (req, res) => {
     if (posts.length === 0) {
       return res.status(404).json({ message: "No posts found for this club/sport" });
     }
-    return res.status(200).json(posts);
+  return res.status(200).json({
+    posts
+  });
 
   } catch (error) {
     console.error("Error fetching posts:", error);
     return res.status(500).json({
-         message: "Internal server error",
-         error: error.message
+      message: "Internal server error",
+      error: error.message
     });
   }
 }

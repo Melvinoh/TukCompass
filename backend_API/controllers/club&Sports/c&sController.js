@@ -4,6 +4,7 @@ import { CS_Members } from "../../modules/club&sport/c&sMembers.js";
 import { User } from "../../modules/Users.js";
 import { CS_Posts } from "../../modules/club&sport/c&sPosts.js";
 import { Posts } from "../../modules/club&sport/post.js";
+import { Op } from "sequelize";
 
 export const creatClubSport = async (req, res) => {
   try {
@@ -59,38 +60,7 @@ export const creatClubSport = async (req, res) => {
   }
 };
 
-export const getClubSport = async (req,res) => {
-  
-  const {type} = req.body
 
-  try {
-    
-    const response = await ClubSports.findAll({
-      where:{
-        type: type
-      }
-    })
-
-    if (response.length === 0) {
-      return res.status(404).json({
-        message: "No clubs found"
-      });
-    }
-    
-    res.status(200).json({
-      message:'fetch successful',
-      clubSport: response
-    });
-
-  } catch (error) {
-
-    console.error(error)
-    res.status(500).json({
-      message: "could not fetch data an error occured",
-      err: error.message
-    })
-  }
-}
 export const getClubSportID = async (req,res) => {
   const {id} = req.params;
   try {
@@ -183,16 +153,16 @@ export const updateClubSport = async (req, res) => {
 
 
 export const enrollClubSport = async (req, res) => {
-  const {id} = req.params;
+  const {clubSportID} = req.body;
   const userID = req.user.userID;
 
   try {
-    const existingEnrollment = await CS_Members.findOne({ where: { userID, clubSportID: id } });
+    const existingEnrollment = await CS_Members.findOne({ where: { userID, clubSportID: clubSportID } });
     if (existingEnrollment) {
       return res.status(400).json({ message:"member"});
     }
-// Enroll the user
-    await CS_Members.create({ userID, clubSportID: id });
+
+    await CS_Members.create({ userID, clubSportID: clubSportID });
     return res.status(200).json({ message: "Enrolled successfully" });
 
   } catch (error) {
@@ -286,3 +256,47 @@ export const getGallery = async (req, res) => {
     });
   }
 }
+
+
+
+export const getClubSport = async (req, res) => {
+
+ const userID = req.user.userID;
+
+  if (!userID) {
+    return res.status(400).json({ message: "User ID is required" });
+  }
+
+  try {
+    // First, get all club IDs the user is already a member of
+    const enrolledClubs = await CS_Members.findAll({
+      where: { userID },
+      attributes: ['clubSportID'],
+    });
+
+    const enrolledIDs = enrolledClubs.map(item => item.clubSportID);
+
+    // Then, find all clubs the user is NOT a member of
+    const clubs = await ClubSports.findAll({
+      where: {
+        clubSportsID: {
+          [Op.notIn]: enrolledIDs.length > 0 ? enrolledIDs : [null]  // fallback to [null] to avoid empty IN
+        }
+      },
+      attributes: ['clubSportsID', 'name', 'type', 'profileURL', 'coverURL']
+    });
+
+    return res.status(200).json({
+      message: "Clubs user has not joined",
+      clubSports: clubs
+    });
+
+  } catch (error) {
+    console.error("Error fetching clubs not joined by user:", error);
+    res.status(500).json({
+      message: "Internal server error",
+      error: error.message
+    });
+  }
+};
+

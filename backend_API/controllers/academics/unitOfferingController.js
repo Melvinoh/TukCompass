@@ -3,6 +3,7 @@ import { sequelize } from "../../config/sequelizeDB.js";
 import { UnitOffering } from "../../modules/Acdemics/unitOffering.js";
 import { Course } from "../../modules/Acdemics/course.js";
 import { Schedule } from "../../modules/Acdemics/schedule.js";
+import { Op } from "sequelize";
 import { ScheduleCourse } from "../../modules/Acdemics/scheduleCourse.js";  
 
 export const unitOfferingReg = async (req, res) => {
@@ -33,9 +34,17 @@ export const unitOfferingReg = async (req, res) => {
 
       // Get courseIDs from names
       const courseRecords = await Course.findAll({
-        where: { courseName: courseNames },
+        where: {
+          courseName: {
+            [Op.or]: courseNames.map(name => ({
+              [Op.like]: `%${name}%`
+            }))
+          }
+        },
+        limit: 10,
         transaction: t
       });
+
 
       if (!courseRecords.length) {
         throw new Error("No matching course(s) found");
@@ -71,7 +80,6 @@ export const unitOfferingReg = async (req, res) => {
     }
 
     await t.commit();
-
     res.status(201).json({
       message: "Unit offering added successfully",
       unitAdded: newOffering
@@ -86,3 +94,33 @@ export const unitOfferingReg = async (req, res) => {
     });
   }
 };
+
+
+
+export const fetchCourses = async (req, res) => {
+
+  const { courseID } = req.body
+
+  try {
+    const courseRecords = await Course.findAll({
+      where: {
+        courseName: {
+          [Op.like]: `%${courseID}%`
+        }
+      },
+      limit: 10,
+    });
+
+    if (!courseRecords.length) {
+      return res.status(404).json({ message: "No courses found" });
+    }
+    res.status(200).json({
+      courseName: courseRecords.map(course => course.courseName),
+    });
+
+  } catch (error) {
+    console.error("Error fetching courses:", error);
+    res.status(500).json({ message: "Internal server error", error: error.message });
+  }
+  
+}

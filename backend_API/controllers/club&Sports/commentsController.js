@@ -43,7 +43,9 @@ export const getComments = async (req, res) => {
     if (comments.length === 0) {
       return res.status(404).json({ message: "No comments found for this post" });
     }
-    return res.status(200).json(comments);
+    return res.status(200).json({
+      comments:comments
+    });
 
   } catch (error) {
     console.error("Error fetching comments:", error);

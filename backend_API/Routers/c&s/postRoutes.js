@@ -5,9 +5,9 @@ import { addpost,deletePost,getPosts  } from '../../controllers/club&Sports/post
 
 const router = express.Router();
 
-router.post('/addPost/:id', authenticate, upload.single('image'), addpost);
 router.post('/addPost', authenticate, upload.single('image'), addpost);
 router.delete('/deletePost/:id', authenticate, deletePost);
 router.get('/getPosts/:id', authenticate, getPosts);
 
 export default router;
+

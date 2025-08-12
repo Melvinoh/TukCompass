@@ -6,7 +6,7 @@ const router = express.Router();
 
 router.post("/addComments", authenticate, addComment);
 router.delete("/deleteComment/:id", authenticate, deleteComment);
-router.get("/getComments", authenticate, getComments);
+router.post("/getComments", authenticate, getComments);
 
 
 export default router;

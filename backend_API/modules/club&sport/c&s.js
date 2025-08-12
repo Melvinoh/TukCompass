@@ -23,7 +23,7 @@ export const ClubSports = sequelize.define('c&s_tb', {
         type: DataTypes.STRING
     },
     patron: {
-        type: DataTypes.STRING(100),
+        type: DataTypes.STRING(30),
         references:{
             model: User,
             key: "userID"

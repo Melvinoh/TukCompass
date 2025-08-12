@@ -4,12 +4,14 @@ import { School } from "./schools.js"
 import { Course } from "./course.js"
 import { Class } from "./class.js"
 import { Department } from "./department.js";
-import {Student} from "./students.js"
+import { Student } from "./students.js"
 import { Lecturer } from "./lecturers.js"
 import { Unit } from "./units.js"
 import { CourseUnit } from "./courseUnit.js";
 import { LecturerUnits } from "./lecturerUnits.js"
 import {UnitOffering} from "./unitOffering.js"
+import {UnitContent} from "./unitContent.js"
+import {UnitOfferingContent} from "./unitOfferingContent.js"
 import {UnitEnrollment} from "./unitEnrollment.js"
 import {Schedule} from "./schedule.js"
 import {ScheduleCourse} from "./scheduleCourse.js"
@@ -43,7 +45,7 @@ Faculty.belongsTo(User, { foreignKey: 'deanID'})
 // Define relationships for Lecturers Students and users
 
 Lecturer.belongsTo(User, { foreignKey: 'lecturerID' })
-User.hasMany(Lecturer, { foreignKey: 'lecturerID' })
+User.hasOne(Lecturer, { foreignKey: 'lecturerID' })
 
 Student.belongsTo(User, { foreignKey: 'studentID' })
 User.hasMany(Student, { foreignKey: 'studentID' })
@@ -51,7 +53,6 @@ User.hasMany(Student, { foreignKey: 'studentID' })
 Unit.belongsToMany(Course,{ through : CourseUnit, foreignKey: 'unitID'})
 Course.belongsToMany(Unit, { through: CourseUnit, foreignKey: 'courseID' })
 
-//many to many relationships
 
 Schedule.belongsToMany(Course, { through: ScheduleCourse, foreignKey: 'scheduleID' })
 Course.belongsToMany(Schedule, { through: ScheduleCourse, foreignKey: 'courseID' })
@@ -64,5 +65,26 @@ Student.belongsToMany(UnitOffering, { through: UnitEnrollment, foreignKey: 'stud
 
 
 
+ScheduleCourse.belongsTo(Schedule, { foreignKey: 'scheduleID' });
+ScheduleCourse.belongsTo(Course, { foreignKey: 'courseID' });
 
+Schedule.hasMany(ScheduleCourse, { foreignKey: 'scheduleID' });
+Course.hasMany(ScheduleCourse, { foreignKey: 'courseID' });
 
+Schedule.belongsTo(UnitOffering, { foreignKey: 'unitOfferingID' });
+UnitOffering.hasMany(Schedule, { foreignKey: 'unitOfferingID' })
+
+Unit.hasMany(UnitOffering, { foreignKey: 'unitID' });
+UnitOffering.belongsTo(Unit, { foreignKey: 'unitID' });
+
+UnitContent.belongsTo(Unit, { foreignKey: 'unitID' });
+Unit.hasOne(UnitContent, { foreignKey: 'unitID' });
+
+UnitOfferingContent.belongsTo(UnitOffering, { foreignKey: 'unitOfferingID' });
+UnitOffering.hasMany(UnitOfferingContent, { foreignKey: 'unitOfferingID' });
+
+UnitContent.belongsTo(User, { foreignKey: 'uploadedBy' });
+User.hasMany(UnitContent, { foreignKey: 'uploadedBy' });
+
+Lecturer.hasMany(UnitOffering, { foreignKey: 'lecturerID' });
+UnitOffering.belongsTo(Lecturer, { foreignKey: 'lecturerID' });

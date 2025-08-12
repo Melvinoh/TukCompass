@@ -21,14 +21,18 @@ export const UnitOfferingContent = sequelize.define("unitOfferingContent_tb", {
     link: {
         type: DataTypes.STRING
     },
-    type:{
-        type: DataTypes.ENUM('recording', 'link')
+    contentType:{
+        type: DataTypes.ENUM('video', 'link','pdf','assignment','past_papers'),
     },
-    description: {
-        type: DataTypes.TEXT
-    },
+
     uploadedAt: {
         type: DataTypes.DATE,
         defaultValue: DataTypes.NOW
+    },
+    PdfUrl: {
+        type: DataTypes.STRING
+    },
+    fileName: {
+        type: DataTypes.STRING(100)
     }
 });
