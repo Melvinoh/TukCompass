@@ -7,7 +7,7 @@ import { authenticate } from '../../middlewares/Authenticate.js'
 
 const router = express.Router();
 
-router.post("/createEvent", authenticate, upload.single("file"), createEvent);
+router.post("/createEvent", authenticate, upload.single("image"), createEvent);
 router.get("/getEvents", getAllEvents);
 router.get("/getEvents/:id", getEventById);
 router.patch('/updateEvent/:id', authenticate, upload.single("file"), updateEvent);

@@ -30,9 +30,7 @@ export const createEvent = async (req, res) => {
             description,
             location,
             date,
-            expireyDate,
             time,
-            targetGroup,
             fileUrl: results.secure_url,
             createdBy,
             createdAt
