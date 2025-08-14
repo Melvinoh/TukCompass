@@ -36,3 +36,4 @@ export const UnitOfferingContent = sequelize.define("unitOfferingContent_tb", {
         type: DataTypes.STRING(100)
     }
 });
+

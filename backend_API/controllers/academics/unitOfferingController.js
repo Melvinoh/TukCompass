@@ -4,12 +4,14 @@ import { UnitOffering } from "../../modules/Acdemics/unitOffering.js";
 import { Course } from "../../modules/Acdemics/course.js";
 import { Schedule } from "../../modules/Acdemics/schedule.js";
 import { Op } from "sequelize";
+import { Student } from "../../modules/Acdemics/students.js";
+import { Lecturer } from "../../modules/Acdemics/lecturers.js";
+import { User } from "../../modules/Users.js";
 import { ScheduleCourse } from "../../modules/Acdemics/scheduleCourse.js";  
 
 export const unitOfferingReg = async (req, res) => {
   const { unitName, lecturerID, academicYear, sem, year, schedules } = req.body;
   const t = await sequelize.transaction();
-
   const unit = await Unit.findOne({where:{unitName},transaction: t})
 
   if(!unit){
@@ -67,13 +69,13 @@ export const unitOfferingReg = async (req, res) => {
 
         // Link each course to this schedule
         for (const courseID of courseIDs) {
-            await ScheduleCourse.findOrCreate({
-                where: {
-                    scheduleID: newSchedule.scheduleID,
-                    courseID 
-                },
-                transaction: t
-            });
+          await ScheduleCourse.findOrCreate({
+              where: {
+                  scheduleID: newSchedule.scheduleID,
+                  courseID 
+              },
+              transaction: t
+          });
 
         }
       }
@@ -122,5 +124,42 @@ export const fetchCourses = async (req, res) => {
     console.error("Error fetching courses:", error);
     res.status(500).json({ message: "Internal server error", error: error.message });
   }
+}
+
+export const getUnitOffering = async (req,res)=>{
+
+ const studentID = req.user.userID
+
+  try {
+    const student = await Student.findByPk(studentID, {
+      include: {
+        model: Course,
+        include: {
+          model: Schedule,
+          include: {
+            model: UnitOffering,
+            include: [
+              { model: Unit },      
+              { model: Lecturer }   
+            ]
+          }
+        }
+      }
+    });
+         
   
+    if (!student) return res.status(404).json({ message: "Student not found" });
+
+    const schedules = student.Course.Schedule;
+    const offeredUnits = schedules.flatMap(schedule =>
+      schedule.unitOffering_tb ? [schedule.unitOffering_tb] : []
+    );
+    res.json({ offeredUnits });
+      
+  } catch (error) {
+    console.error(error)
+    res.status(500).json({
+      message: error.message
+    });
+  }  
 }

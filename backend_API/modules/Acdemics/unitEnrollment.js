@@ -21,7 +21,7 @@ import {UnitOffering} from "./unitOffering.js"
     unitOfferingID:{
         type: DataTypes.STRING(40),
         allowNull: false,
-         references:{
+        references:{
             model:UnitOffering,
             key:"unitOfferingID"
         }
@@ -33,5 +33,4 @@ import {UnitOffering} from "./unitOffering.js"
         type: DataTypes.ENUM("active", "complited"),
         defaultValue: "active"
     }
-  
 })
