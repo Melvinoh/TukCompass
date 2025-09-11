@@ -5,6 +5,7 @@ import { User } from "../Users.js";
 
 
 Chats.hasMany(ChatMember, {foreignKey: "chatID",sourceKey: "chatID", as: "ChatMembers"});
+Chats.hasMany(ChatMember, { as: "UserMembership", foreignKey: "chatID" });
 ChatMember.belongsTo(Chats, {foreignKey: "chatID", targetKey: "chatID", onDelete: "CASCADE",onUpdate: "CASCADE"});
 
 User.hasMany(ChatMember, {foreignKey: "userID",sourceKey: "userID",});

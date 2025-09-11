@@ -4,6 +4,7 @@ import {sequelize} from '../config/sequelizeDB.js';
  export const User = sequelize.define('user_tb', {
     userID:{
         type: DataTypes.STRING(30),
+        allowNull:false,
         primaryKey:true
     },
     fname:{

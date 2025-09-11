@@ -28,5 +28,12 @@ export const ChatMember = sequelize.define("chatMembers_tb", {
         },
         onUpdate: "CASCADE",
         onDelete: "CASCADE"
+    },
+    role: {
+        type: DataTypes.ENUM("member","admin"),
+        defaultValue:"member"
+    },
+    lastSeen:{
+        type: DataTypes.DATE
     }
 });

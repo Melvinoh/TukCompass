@@ -8,9 +8,9 @@ export const Chats = sequelize.define("chats_tb", {
     primaryKey: true,
     defaultValue: DataTypes.UUIDV4
   },
-  isGroupChat: {
-    type: DataTypes.BOOLEAN,
-
+  type: {
+    type: DataTypes.ENUM('private', 'group'),
+    defaultValue: "private"
   },
   chatName: {
     type: DataTypes.STRING(45),
@@ -18,11 +18,4 @@ export const Chats = sequelize.define("chats_tb", {
   chatAvatar: {
     type: DataTypes.STRING(255),
   },
-  createdBy: {
-    type: DataTypes.STRING(30),
-    references: {
-      model: User,
-      key: "userID"
-    }
-  }
 },{timestamps: true});

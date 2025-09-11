@@ -7,21 +7,17 @@ import { Op } from "sequelize";
 import { response } from "express";
 
 
-async function createChat(senderID, receiverID, isGroupBool, chatName, chatAvatar) {
-
-  console.log("Receiver ID:", receiverID, "Sender ID:", senderID, "Is Group:", isGroupBool);
+async function createChat(senderID, receiverID, type, chatName, chatAvatar) {
 
   let chat = null;
 
-
-  if (!isGroupBool && senderID && receiverID) {
-
-    const chatsWithSender = await ChatMember.findAll({
-      attributes: ["chatID"],
+  if (type === "private" && senderID && receiverID) {
+ 
+    const userChats = await ChatMember.findAll({
       where: { userID: senderID }
     });
 
-    const chatIDs = chatsWithSender.map(c => c.chatID);
+    const chatIDs = userChats.map(c => c.chatID);
 
     console.log("Chat IDs with sender:", chatIDs);
 
@@ -33,7 +29,7 @@ async function createChat(senderID, receiverID, isGroupBool, chatName, chatAvata
       include: [{
         model: Chats,
         attributes: ["chatID"],
-        where: { isGroupChat: false }
+        where: { type: type }
       }]
     });
 
@@ -52,10 +48,9 @@ async function createChat(senderID, receiverID, isGroupBool, chatName, chatAvata
 
       try {
         const newChat = await Chats.create({ 
-            isGroupChat: isGroupBool,
-            chatName: isGroupBool ? chatName : null,
-            chatAvatar: isGroupBool ? chatAvatar : null,
-            createdBy: senderID,
+            type: type,
+            chatName: type == "group" ? chatName : null,
+            chatAvatar: type == "group" ? chatAvatar : null,
         },{transaction});
 
         const membersToAdd = [
@@ -67,12 +62,11 @@ async function createChat(senderID, receiverID, isGroupBool, chatName, chatAvata
         await transaction.commit();
 
         chat = newChat;
-        
+       
       } catch (error) {
 
         await transaction.rollback();
         console.error("Error creating chat:", error);
-
       }
     }
   }
@@ -82,16 +76,14 @@ async function createChat(senderID, receiverID, isGroupBool, chatName, chatAvata
 
 export const sendMessage = async (req, res) => {
   try {
-    const { senderID, receiverID, isGroup, message, chatName, chatAvatar } = req.body;
+    const { senderID, receiverID, type, message, chatName, chatAvatar } = req.body;
 
     console.log("Request body:", req.body);
 
-    const isGroupBool = isGroup === "true";
+
     const file = req.file;
+    const chat = await createChat(senderID, receiverID, type, chatName, chatAvatar);
 
-    const chat = await createChat(senderID, receiverID, isGroupBool, chatName, chatAvatar);
-
-    console.log("Chat created or found:", chat);
 
     if (!chat) {
       return res.status(404).json({ message: "Chat not found or could not be created" });
@@ -121,7 +113,7 @@ export const sendMessage = async (req, res) => {
     const newMessage = await ChatMessage.create({
 
       chatID: chat.chatID,
-      message,
+      messageContent: message,
       mediaUrl,
       mediaType,
       senderID,
@@ -132,7 +124,7 @@ export const sendMessage = async (req, res) => {
       { where: { chatID: chat.chatID, userID: senderID } }
     );
 
-    req.io.to(chat.chatID).emit("receiveMessage", {
+    req.io.to(`chat:${chat.chatID}`).emit("new_message", {
       chatID: chat.chatID,
       senderID,
       message,
@@ -162,18 +154,23 @@ export const getUserChats = async (req, res) => {
   
   const chats = await Chats.findAll({
     include: [
-    {
-      model: ChatMember,
-      as: "ChatMembers",
-      attributes: ["memberID", "userID", "lastSeen"],
-      include: [
-        {
-          model: User,
-          attributes: ["userID", "fname", "sname", "profileUrl"]
-        }
-      ]
-    }
-  ],
+      {
+        model: ChatMember,
+        as: "ChatMembers",        // ✅ second include: full members
+        attributes: ["memberID", "userID", "lastSeen"],
+        include: [
+            { model: User, attributes: ["userID", "fname", "sname", "profileUrl"] }
+        ]
+      },
+      {
+        model: ChatMember,
+        as: "UserMembership",
+        required: "true",
+        where:{userID},
+        attributes: [],
+      },
+
+    ],
     order: [["updatedAt", "DESC"]]
 
   });
@@ -183,6 +180,7 @@ export const getUserChats = async (req, res) => {
   });
  
   const interim = await Promise.all(chats.map(async (chat) => {
+    
     const lastMessage = await ChatMessage.findOne({
       where: { chatID: chat.chatID },
       order: [["createdAt", "DESC"]],
@@ -193,34 +191,24 @@ export const getUserChats = async (req, res) => {
   
     const recievers = chat.ChatMembers.find(m => m.userID !== userID)
 
-    console.log("RECIEVER",recievers.user_tb)
+    console.log("RECIEVER",recievers)
 
     let receiverName = chat.chatName || "";
     let profileurl = chat.chatAvatar || "";
 
     if (!chat.isGroupChat) {
-      
-
       if (recievers) {
         receiverName = `${recievers.user_tb.fname} ${recievers.user_tb.sname}`;
         profileurl = recievers.user_tb.profileUrl || "";
       }
     }
-
-    // pick lastSeen of the RECEIVER (other person) if available (null for group)
     let receiverLastSeen = null;
-    if (!chat.isGroupChat) {
-      // if otherMembership is a ChatMember row, it has .lastSeen
-      receiverLastSeen = recievers && recievers.lastSeen ? otherMembership.lastSeen : null;
-    }
-
     return {
       chatID: chat.chatID,
       profileUrl: profileurl || "",
       receiverName: receiverName || "",
       lastSeen: receiverLastSeen ? new Date(receiverLastSeen).toISOString() : null,
-      message: lastMessage ? lastMessage.message : "",
-    
+      message: lastMessage ? lastMessage.messageContent : "",
       __lastMessageTime: lastMessage ? new Date(lastMessage.createdAt).getTime() : (chat.updatedAt ? new Date(chat.updatedAt).getTime() : 0)
     };
   }));
@@ -232,7 +220,7 @@ export const getUserChats = async (req, res) => {
 
   return res.json({ 
     message: "Chats retrieved successfully",
-    chats: payload 
+    chats: interim
   });
 
   } catch (err) {
@@ -255,7 +243,6 @@ export const getChatMessages = async (req, res) => {
       return res.status(403).json({ success: false, message: "Access denied" });
     }
 
-    // Get chat messages with sender details
     const messages = await ChatMessage.findAll({
       where: { chatID },
       include: [
@@ -271,7 +258,7 @@ export const getChatMessages = async (req, res) => {
     // Build payload
     const formattedMessages = messages.map(msg => ({
       messageID: msg.messageID,
-      message: msg.message,
+      message: msg.messageContent,
       mediaUrl: msg.mediaUrl,
       senderID: msg.senderID,
       profileUrl: msg.user_tb.profileUrl,

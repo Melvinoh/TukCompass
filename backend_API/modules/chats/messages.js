@@ -25,7 +25,7 @@ export const ChatMessage = sequelize.define("chatMessages_tb", {
             key: "userID",
         }
     },
-    message: {
+    messageContent: {
         type: DataTypes.TEXT,
         allowNull: false
     },
