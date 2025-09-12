@@ -76,9 +76,10 @@ async function createChat(senderID, receiverID, type, chatName, chatAvatar) {
 
 export const sendMessage = async (req, res) => {
   try {
-    const { senderID, receiverID, type, message, chatName, chatAvatar } = req.body;
+    const { receiverID, type, message, chatName, chatAvatar } = req.body;
 
     console.log("Request body:", req.body);
+    const senderID = req.user.userID;
 
 
     const file = req.file;
@@ -119,18 +120,23 @@ export const sendMessage = async (req, res) => {
       senderID,
 
     });
+
+    const userDet = await User.findOne({
+      where: { userID: senderID },
+      attributes: ["userID", "fname", "sname", "profileUrl"]
+    });
+
+    newMessage.dataValues.senderName = `${userDet.fname} ${userDet.sname}`;
+    newMessage.dataValues.profileUrl = userDet.profileUrl;
+    
+    console.log("New message created:", newMessage);
     const lastSeen = await ChatMember.update(
       { lastSeen: new Date() },
       { where: { chatID: chat.chatID, userID: senderID } }
     );
 
     req.io.to(`chat:${chat.chatID}`).emit("new_message", {
-      chatID: chat.chatID,
-      senderID,
-      message,
-      mediaUrl,
-      mediaType,
-      createdAt: newMessage.createdAt,
+      newMessage,
     });
 
     res.status(201).json({

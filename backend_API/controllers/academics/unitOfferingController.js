@@ -6,7 +6,6 @@ import { Schedule } from "../../modules/Acdemics/schedule.js";
 import { Op } from "sequelize";
 import { Student } from "../../modules/Acdemics/students.js";
 import { Lecturer } from "../../modules/Acdemics/lecturers.js";
-import { User } from "../../modules/Users.js";
 import { ScheduleCourse } from "../../modules/Acdemics/scheduleCourse.js";  
 
 export const unitOfferingReg = async (req, res) => {
