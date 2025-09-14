@@ -3,9 +3,6 @@ import { Chats } from "../../modules/chats/chats.js";
 import { ChatMessage } from "../../modules/chats/messages.js";
 import { cloudinary } from "../../config/cloudinary.js";
 import { User } from "../../modules/Users.js";
-import { Op } from "sequelize";
-import { response } from "express";
-
 
 async function createChat(senderID, receiverID, type, chatName, chatAvatar) {
 
@@ -19,8 +16,6 @@ async function createChat(senderID, receiverID, type, chatName, chatAvatar) {
 
     const chatIDs = userChats.map(c => c.chatID);
 
-    console.log("Chat IDs with sender:", chatIDs);
-
     const chatsWithBoth = await ChatMember.findOne({
       where: {
         chatID: chatIDs,
@@ -33,15 +28,10 @@ async function createChat(senderID, receiverID, type, chatName, chatAvatar) {
       }]
     });
 
-    console.log("Chats with both members:", chatsWithBoth);
-
-
     if(chatsWithBoth){
       chat = chatsWithBoth;
 
     }
-
-    console.log("Chat found:", chat);
 
     if (!chat) {
       const transaction = await Chats.sequelize.transaction();
@@ -79,8 +69,7 @@ export const sendMessage = async (req, res) => {
     const { receiverID, type, message, chatName, chatAvatar } = req.body;
 
     console.log("Request body:", req.body);
-    const senderID = req.user.userID;
-
+    const senderID = req.user.userID; 
 
     const file = req.file;
     const chat = await createChat(senderID, receiverID, type, chatName, chatAvatar);
@@ -116,7 +105,6 @@ export const sendMessage = async (req, res) => {
       chatID: chat.chatID,
       messageContent: message,
       mediaUrl,
-      mediaType,
       senderID,
 
     });
@@ -128,8 +116,7 @@ export const sendMessage = async (req, res) => {
 
     newMessage.dataValues.senderName = `${userDet.fname} ${userDet.sname}`;
     newMessage.dataValues.profileUrl = userDet.profileUrl;
-    
-    console.log("New message created:", newMessage);
+   
     const lastSeen = await ChatMember.update(
       { lastSeen: new Date() },
       { where: { chatID: chat.chatID, userID: senderID } }
@@ -141,7 +128,7 @@ export const sendMessage = async (req, res) => {
 
     res.status(201).json({
       message: "Message sent successfully",
-      data: newMessage,
+      data: newMessage ,
       lastSeen: lastSeen
     });
 
@@ -180,10 +167,6 @@ export const getUserChats = async (req, res) => {
     order: [["updatedAt", "DESC"]]
 
   });
-  console.log("Chats found for user:", userID, chats);
-  chats.forEach(chat => {
-    console.log("ChatMembers:", chat.ChatMembers); 
-  });
  
   const interim = await Promise.all(chats.map(async (chat) => {
     
@@ -192,20 +175,18 @@ export const getUserChats = async (req, res) => {
       order: [["createdAt", "DESC"]],
       limit: 1
     });
-    console.log("Last message for chat:", chat.chatID, lastMessage);
-
   
     const recievers = chat.ChatMembers.find(m => m.userID !== userID)
-
-    console.log("RECIEVER",recievers)
-
     let receiverName = chat.chatName || "";
     let profileurl = chat.chatAvatar || "";
+    let receiverID = "";
 
     if (!chat.isGroupChat) {
       if (recievers) {
+        
         receiverName = `${recievers.user_tb.fname} ${recievers.user_tb.sname}`;
         profileurl = recievers.user_tb.profileUrl || "";
+        receiverID = recievers.user_tb.userID || "";
       }
     }
     let receiverLastSeen = null;
@@ -213,6 +194,7 @@ export const getUserChats = async (req, res) => {
       chatID: chat.chatID,
       profileUrl: profileurl || "",
       receiverName: receiverName || "",
+      receiverID: receiverID || "",
       lastSeen: receiverLastSeen ? new Date(receiverLastSeen).toISOString() : null,
       message: lastMessage ? lastMessage.messageContent : "",
       __lastMessageTime: lastMessage ? new Date(lastMessage.createdAt).getTime() : (chat.updatedAt ? new Date(chat.updatedAt).getTime() : 0)
@@ -231,10 +213,9 @@ export const getUserChats = async (req, res) => {
 
   } catch (err) {
   console.error(err);
-  return res.status(500).json({ success: false, message: "Server error" });
+  return res.status(500).json({ success: false, message: err.message });
   }
 };
-
 
 export const getChatMessages = async (req, res) => {
   try {
@@ -259,12 +240,12 @@ export const getChatMessages = async (req, res) => {
       ],
       order: [["createdAt", "ASC"]] // oldest first
     });
-    console.log("Messages found for chat:", chatID, messages);
-
+    
     // Build payload
     const formattedMessages = messages.map(msg => ({
+      chatID: msg.chatID,
       messageID: msg.messageID,
-      message: msg.messageContent,
+      messageContent: msg.messageContent,
       mediaUrl: msg.mediaUrl,
       senderID: msg.senderID,
       profileUrl: msg.user_tb.profileUrl,
@@ -283,3 +264,19 @@ export const getChatMessages = async (req, res) => {
     res.status(500).json({ success: false, message: "Server error" });
   }
 };
+function getMediaType(filename) {
+  if (!filename) return "file";
+
+  const ext = filename.split('.').pop().toLowerCase();
+
+  const imageExts = ["jpg", "jpeg", "png", "gif", "bmp", "webp"];
+  const videoExts = ["mp4", "mov", "avi", "mkv", "webm", "flv"];
+  const docExts = ["pdf", "doc", "docx", "xls", "xlsx", "ppt", "pptx", "txt"];
+
+  if (imageExts.includes(ext)) return "image";
+  if (videoExts.includes(ext)) return "video";
+  if (docExts.includes(ext)) return "document";
+
+  return "file"; // default fallback
+}
+

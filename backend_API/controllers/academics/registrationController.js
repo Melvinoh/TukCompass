@@ -115,3 +115,54 @@ export const updateUser = async (req, res) =>{
     }
 
 }
+
+
+export const getContacts = async (req, res) => {
+  try {
+    const userID = req.user.userID; // from auth middleware
+
+    // 1. Find logged in student with course + course.department
+    const student = await Student.findOne({
+      where: { studentID: userID },
+      include: {
+        model: Course,
+        attributes: ['courseID', 'courseName', 'departmentID']
+      }
+    });
+
+    if (!student) {
+      return res.status(404).json({ message: 'Student not found' });
+    }
+
+    const { courseID, departmentID } = student.course_tb; // sequelize alias
+
+    // 2. Find classmates (other users in same course)
+    const classmates = await Student.findAll({
+      where: { courseID },
+      include: {
+        model: User,
+        attributes: ['userID', 'fname', 'sname', 'email', 'mobile', 'profileUrl']
+      }
+    });
+
+    // 3. Find lecturers in same department
+    const lecturers = await Lecturer.findAll({
+      where: { departmentID },
+      include: {
+        model: User,
+        attributes: ['userID', 'fname', 'sname', 'email', 'mobile', 'profileUrl']
+      }
+    });
+
+    return res.json({
+      course: student.course_tb.courseName,
+      classmates: classmates.map(c => c.user_tb), // return clean users
+      lecturers: lecturers.map(l => l.user_tb)
+    });
+
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ error: 'Server error' });
+  }
+};
+
