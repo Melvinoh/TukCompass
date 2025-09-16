@@ -126,7 +126,6 @@ app.use("/api/posts",postRoutes);
 
 app.use("/api/events", eventRoutes);
 app.use("/api/announcment", annoncmentRoutes);
-
 app.use("/api/chats", chatRoutes);
 
 

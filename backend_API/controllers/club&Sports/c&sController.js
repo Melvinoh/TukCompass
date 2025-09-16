@@ -278,13 +278,12 @@ export const getClubSport = async (req, res) => {
 
     // Then, find all clubs the user is NOT a member of
     const clubs = await ClubSports.findAll({
-      where: {
-        clubSportsID: {
-          [Op.notIn]: enrolledIDs.length > 0 ? enrolledIDs : [null]  // fallback to [null] to avoid empty IN
-        }
-      },
+      where: enrolledIDs.length > 0 
+        ? { clubSportsID: { [Op.notIn]: enrolledIDs } }
+        : {},
       attributes: ['clubSportsID', 'name', 'type', 'profileURL', 'coverURL']
     });
+
 
     return res.status(200).json({
       message: "Clubs user has not joined",

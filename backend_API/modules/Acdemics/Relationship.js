@@ -53,6 +53,11 @@ User.hasMany(Student, { foreignKey: 'studentID' })
 Unit.belongsToMany(Course,{ through : CourseUnit, foreignKey: 'unitID'})
 Course.belongsToMany(Unit, { through: CourseUnit, foreignKey: 'courseID' })
 
+CourseUnit.belongsTo(Unit, { foreignKey: 'unitID', });
+Unit.hasMany(CourseUnit, { foreignKey: 'unitID', });
+
+CourseUnit.belongsTo(Course, { foreignKey: 'courseID', });
+Course.hasMany(CourseUnit, { foreignKey: 'courseID', });
 
 Schedule.belongsToMany(Course, { through: ScheduleCourse, foreignKey: 'scheduleID' })
 Course.belongsToMany(Schedule, { through: ScheduleCourse, foreignKey: 'courseID' })

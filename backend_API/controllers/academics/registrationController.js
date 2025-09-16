@@ -13,14 +13,14 @@ export const userRegistration = async (req, res) =>{
 
     const t =  await sequelize.transaction();
     try {
-        const{ fname, lname, email, userID,  role, courseName, enrolmentYear, password,departmentName}= req.body
+        const{ fname, sname, email, userID,  role, courseName, enrolmentYear, password,departmentName}= req.body
         const salt = bcrypt.genSaltSync(10);
         const hashPassword = bcrypt.hashSync(password, salt);
         const newUser = await User.create({
             userID, 
-            fname, 
-            sname: lname, 
-            email, 
+            fname,
+            sname,
+            email,
             password: hashPassword,
             role,
          }, {transaction: t })
@@ -40,7 +40,7 @@ export const userRegistration = async (req, res) =>{
                 transaction: t
             });
             if(!classRec){
-                res.status(404).json({message:"course not found"})
+                res.status(404).json({message:"could not add details"})
             }
     
             const newStudent = await Student.create({
@@ -120,6 +120,7 @@ export const updateUser = async (req, res) =>{
 export const getContacts = async (req, res) => {
   try {
     const userID = req.user.userID; // from auth middleware
+    console.log("Fetching contacts for userID:", userID);
 
     // 1. Find logged in student with course + course.department
     const student = await Student.findOne({
