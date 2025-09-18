@@ -34,7 +34,7 @@ export const getStudentsTimetable = async (req, res) => {
     }
     const {Year,semister,academicYear} = getYearSemister(enrolmentYear);
 
-    const schedule = await ScheduleCourse.findAll({ where: { courseID }, include: { model: Schedule, include: [ { model: UnitOffering, attributes: ['unitID','unitOfferingID'], where: { year: Year, sem: semister, academicYear }, include: [ { model: Unit }, { model: Lecturer } ] } ] } });
+    const schedule = await ScheduleCourse.findAll({ where: { courseID }, include: { model: Schedule, include: [ { model: UnitOffering, attributes: ['unitID','unitOfferingID'], where: { year: Year, sem: semister, academicYear }, include: [ { model: Unit }, { model: Lecturer,include: [{ model: User, attributes: ['fname', 'sname','profileUrl'] }] } ] } ] } });
    // Debug/log to inspect shape when something unexpected happens
     console.log("getStudentsTimetable - primary schedule length:", schedule.length);
     if (process.env.NODE_ENV !== 'production') {
@@ -58,7 +58,7 @@ export const getStudentsTimetable = async (req, res) => {
             },
             include: [
               { model: Unit },
-              { model: Lecturer, include: [{ model: User, attributes: ['fname', 'sname'] }] }
+              { model: Lecturer, include: [{ model: User, attributes: ['fname', 'sname','profileUrl'] }] }
             ]
           }]
         }]
@@ -68,6 +68,8 @@ export const getStudentsTimetable = async (req, res) => {
     const sessions = schedule.map(sc => {
       const sched = sc.schedule_tb;
       const unitOffering = sched?.unitOffering_tb;
+      const lecturerUser = unitOffering?.lecturers_tb?.user_tb;
+      const lecturerName = lecturerUser ? `${lecturerUser.fname} ${lecturerUser.sname}` : unitOffering?.lecturers_tb?.lecturerID;
 
       if (!sched || !unitOffering || !unitOffering.units_tb || !unitOffering.lecturers_tb) {
         return null;
@@ -80,7 +82,8 @@ export const getStudentsTimetable = async (req, res) => {
         unitName: unitOffering.units_tb.unitName,
         unitID: unitOffering.units_tb.unitID,
         unitOfferingID: unitOffering.unitOfferingID,
-        lecturerName: unitOffering.lecturers_tb.lecturerID,
+        lecturerName: lecturerName,
+        lecturerProfile: unitOffering.lecturers_tb.user_tb?.profileUrl || null,
         mode: sched.mode
       };
     }).filter(Boolean);
@@ -174,6 +177,7 @@ const transformToFixedTimetable = (sessions) => {
         unitID: s.unitID,
         unitOfferingID: s.unitOfferingID,
         lecturerName: s.lecturerName,
+        lecturerProfile:  s.lecturerProfile,
         mode: s.mode
       };
     }

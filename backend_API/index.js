@@ -2,6 +2,7 @@ import express  from "express";
 import { Server } from "socket.io";
 import http from "http";
 import {attachSocketIO} from "./middlewares/socket.js"
+import jwt from 'jsonwebtoken';
 
 import "./modules/Acdemics/Relationship.js";
 import "./modules/club&sport/relationships.js"
@@ -57,41 +58,28 @@ io.use((socket, next) => {
     socket.user = payload; 
     next();
   } catch (e) {
-    next(new Error('Authentication error'));
+    next(new Error(e.message));
   }
 });
 
 io.on("connection", async (socket) => {
-    console.log("✅ User connected: " + socket.id);
-
-    const userID = string(socket.user.userID)
+  
+    const userID = socket.user.userID
 
     if(!onlineUsers.has(userID)) onlineUsers.set(userID, new Set())
       onlineUsers.get(userID).add(socket.id)
 
     socket.join(`user: ${userID}`)
 
-    socket.on("joinChat", (chatID) => {
-      socket.join(chatID);
-      console.log(`User joined chat: ${chatID}`);
+    socket.on("join_chat", (chatID) => {
+      socket.join(chatID); // no "chat:"
+      console.log(`✅ User ${socket.user.userID} joined room: ${chatID}`);
     });
 
-    try {
-      const myChats = await ChatMember.findAll(
-        {
-          where : {userID: socket.user.userID},
-          attributes : ['chatID']
-        }
-      )
-      myChats.forEach( chat => socket.join(`chat:${m.chatID}`))
-    } catch (err) {
-      
-      console.error("failed to join chat rooms" , err)
-      
-    }
 
-  
-
+    socket.onAny((event, ...args) => {
+      console.log(`📩 [${socket.id}] Event received: ${event}`, args);
+    });
     socket.on("disconnect", () => {
         console.log("❌ User disconnected: " + socket.id);
     });

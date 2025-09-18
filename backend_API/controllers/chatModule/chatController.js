@@ -120,11 +120,17 @@ export const sendMessage = async (req, res) => {
     const lastSeen = await ChatMember.update(
       { lastSeen: new Date() },
       { where: { chatID: chat.chatID, userID: senderID } }
+  
     );
 
-    req.io.to(`chat:${chat.chatID}`).emit("new_message", {
-      newMessage,
-    });
+ const payload = { newMessage };
+
+  console.log("📤 Emitting to room:", chat.chatID);
+  console.log("📦 Payload type:", typeof payload, payload);
+  console.log("📦 JSON payload:", JSON.stringify(payload, null, 2));
+
+  req.io.to(chat.chatID).emit("new_message", payload);
+
 
     res.status(201).json({
       message: "Message sent successfully",

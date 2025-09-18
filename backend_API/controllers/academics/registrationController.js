@@ -82,7 +82,6 @@ export const updateUser = async (req, res) =>{
         })
     }
     try {
-
         const profileUrl = await cloudinary.uploader.upload(file.path, {
             resource_type: "image",
             folder: "profile",
