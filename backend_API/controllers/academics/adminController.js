@@ -5,7 +5,7 @@ import { School } from "../../modules/Acdemics/schools.js";
 import { Department } from "../../modules/Acdemics/department.js";
 
 
-export const adminPanel = async (res, req)=>{
+export const adminPanel = async (req, res)=>{
     
     const{facultyID, facultyName, deanID, schools} = req.body
     const t = await sequelize.transaction()
